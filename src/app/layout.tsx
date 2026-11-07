@@ -1,10 +1,31 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
+const DESCRIPCION =
+  'Pegá un link de Mercado Libre Uruguay y te decimos si conviene comprarlo acá o traerlo del exterior, con courier e impuestos ya calculados.';
+
 export const metadata: Metadata = {
-  title: '¿Conviene afuera?',
-  description:
-    'Pegá un link de Mercado Libre Uruguay y te decimos si conviene comprarlo acá o traerlo del exterior, con impuestos y courier incluidos.',
+  title: {
+    default: '¿Conviene afuera? — Comparador de precios Uruguay vs exterior',
+    template: '%s · ¿Conviene afuera?',
+  },
+  description: DESCRIPCION,
+  applicationName: '¿Conviene afuera?',
+  keywords: [
+    'comprar en el exterior',
+    'franquicia Uruguay',
+    'courier Uruguay',
+    'Mercado Libre Uruguay',
+    'impuestos importación',
+  ],
+  openGraph: {
+    title: '¿Conviene afuera?',
+    description: DESCRIPCION,
+    locale: 'es_UY',
+    type: 'website',
+  },
+  twitter: { card: 'summary', title: '¿Conviene afuera?', description: DESCRIPCION },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {

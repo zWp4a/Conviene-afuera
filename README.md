@@ -66,7 +66,7 @@ config/                  normativa y tarifas, versionadas
   categorias-peso.ts     ← pesos estimados por categoría
   vendedores-eeuu.ts     ← registro de vendedores de EE.UU. de la DNA
 src/
-  app/                   páginas, server action y /api/compare
+  app/                   páginas, server action, /api/compare e icono
   components/            UI
   lib/                   money, cache, logger, rate-limit, env
   modules/               la lógica de negocio
@@ -229,7 +229,7 @@ No hace falta tocar nada más: la UI, el matcher y `landed-cost` lo toman solos.
 | 2 | `ml-reader` con OAuth · `fx` contra fuente real | ✅ Código completo; falta que cargues las credenciales de ML |
 | 3 | `matcher` con Claude | ✅ Completa |
 | 3 | `foreign-search` con eBay | Pendiente: faltan credenciales de developer |
-| 4 | Pulido de UI y deploy | Pendiente |
+| 4 | Portada, pulido de UI y deploy | 🔄 Portada lista; falta deploy |
 
 **Fuera de alcance del MVP:** cuentas de usuario, seguimiento persistente del cupo, extensión de navegador, AliExpress/Shein/Temu, links de afiliado (el campo `affiliateUrl` está en el tipo pero sin integrar).
 

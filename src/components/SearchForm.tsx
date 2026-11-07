@@ -7,7 +7,16 @@ import { Resultado } from './Resultado';
 
 const INICIAL: CompareState = { status: 'idle' };
 
-export function SearchForm() {
+export interface SearchFormProps {
+  /**
+   * Secciones de la portada. Se renderizan sólo mientras no hay resultado:
+   * una vez que la persona tiene su respuesta, explicarle cómo funciona la
+   * app es ruido, y el disclaimer del resultado ya cubre lo legal.
+   */
+  readonly landing?: React.ReactNode;
+}
+
+export function SearchForm({ landing }: SearchFormProps) {
   const [state, action, pending] = useActionState(compareAction, INICIAL);
   const [url, setUrl] = useState('');
   const [mostrarFranquicia, setMostrarFranquicia] = useState(false);
@@ -15,6 +24,7 @@ export function SearchForm() {
   // Mercado Libre cerró el acceso a los precios de publicaciones para apps no
   // certificadas, así que cuando no podemos verlo se lo pedimos a la persona.
   const pidePrecio = state.status === 'falta-precio';
+  const hayResultado = state.status === 'ok';
 
   // Validación en vivo, sin molestar hasta que haya algo escrito.
   const urlSospechosa = url.trim().length > 12 && !isMLUrl(url);
@@ -152,6 +162,8 @@ export function SearchForm() {
       )}
 
       {!pending && state.status === 'ok' && <Resultado result={state.result} />}
+
+      {!hayResultado && landing}
     </>
   );
 }
