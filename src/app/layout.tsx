@@ -1,10 +1,13 @@
 import type { Metadata, Viewport } from 'next';
+import { siteUrl } from '@/lib/site';
 import './globals.css';
 
 const DESCRIPCION =
   'Pegá un link de Mercado Libre Uruguay y te decimos si conviene comprarlo acá o traerlo del exterior, con courier e impuestos ya calculados.';
 
 export const metadata: Metadata = {
+  // Hace absolutas las URLs de OpenGraph al compartir el link.
+  metadataBase: new URL(siteUrl()),
   title: {
     default: '¿Conviene afuera? — Comparador de precios Uruguay vs exterior',
     template: '%s · ¿Conviene afuera?',

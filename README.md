@@ -237,11 +237,29 @@ No hace falta tocar nada más: la UI, el matcher y `landed-cost` lo toman solos.
 
 ## Deploy
 
-**Vercel:** importá el repo y cargá las variables de `.env.example` en Settings → Environment Variables. No hace falta más configuración.
+### Vercel
 
-**VPS con Docker:** `npm run build` genera el build estándar de Next. Nota: el rate limiting y la caché son en memoria, así que con varias instancias cada una lleva su propia cuenta. Para algo serio, mover `CacheStore` y el rate limit a Redis.
+1. [vercel.com](https://vercel.com) → **Add New → Project** → importá `zWp4a/Conviene-afuera`.
+2. Elegí la rama donde esté el código.
+3. Cargá las variables de `.env.example` que vayas a usar. **Todas son opcionales**: sin ninguna, la app levanta igual con datos de ejemplo y lo dice en pantalla.
+4. Deploy. Next.js se detecta solo; no hay que tocar build ni output.
 
----
+Ya viene configurado:
+
+- `vercel.json` fija la región **`gru1`** (São Paulo), que es la más cercana a Uruguay. Importa porque cada consulta encadena varias llamadas a APIs externas.
+- Timeout de 30 s para `/api/compare`, que en el peor caso hace búsqueda en catálogo, ficha, publicaciones, cotización y matcher.
+- Cabeceras de seguridad, `robots.txt` y `sitemap.xml`.
+- `GET /api/health` dice qué quedó configurado y qué no, sin revelar ningún valor. Es lo primero que conviene mirar después de un deploy.
+
+### Qué NO escala todavía
+
+**El rate limiting y la caché son en memoria.** Con varias instancias, cada una lleva su propia cuenta: el límite efectivo se multiplica por la cantidad de instancias, y la caché se reparte. Para el MVP alcanza; si el tráfico crece, hay que mover `CacheStore` (`src/lib/cache.ts`) y el limitador (`src/lib/rate-limit.ts`) a Redis o Upstash. Los dos ya están detrás de una interfaz, así que es cambiar la implementación y nada más.
+
+**El logging va a stdout.** En Vercel queda en los logs de la función, que se retienen poco. Para auditar la calidad del matching en serio hay que mandarlo a un colector.
+
+### VPS con Docker
+
+`npm run build` genera el build estándar de Next. Aplican los mismos límites de memoria de arriba, con la diferencia de que una sola instancia los vuelve irrelevantes.
 
 ## Aviso
 
