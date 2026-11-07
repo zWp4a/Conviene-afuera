@@ -1,116 +1,148 @@
 /**
- * CLIENTE DE LA API DE MERCADO LIBRE
- * ===================================
- * Dos endpoints, según qué tipo de link pegó el usuario:
+ * RESOLUCIÓN DE UN LINK DE ML A UN PRODUCTO
+ * ==========================================
+ * Dos caminos, según qué pegó el usuario:
  *
- *   /items/{id}      para links de artículo (articulo.mercadolibre.com.uy/MLU-...)
- *   /products/{id}   para links de catálogo (mercadolibre.com.uy/p/MLU...)
+ *   /p/MLU12345678          → el id ES el del catálogo. Directo.
+ *   /MLU-123456789-titulo   → el id es de una publicación, y `/items/{id}`
+ *                             está cerrado para apps no certificadas. Pero el
+ *                             título viene en el slug de la URL: lo buscamos
+ *                             en el catálogo y elegimos con el matcher.
  *
- * El id tiene la misma forma en los dos casos, así que no se puede distinguir
- * por el id: lo decide `parseMLUrl` mirando el path. Si el endpoint elegido
- * devuelve 404, probamos el otro antes de darnos por vencidos — hay links que
- * redirigen entre una forma y la otra.
+ * Lo segundo no es scraping: el título está en el texto que el usuario pegó.
+ *
+ * Nota de arquitectura: este módulo importa `matcher`, que es la única
+ * dependencia entre módulos del proyecto. Se justifica porque elegir el
+ * producto correcto de una lista de resultados ES un problema de matching, y
+ * porque la parte que usamos es pura — sin red, sin LLM y sin costo.
  */
-import { getAccessToken } from './auth';
-import { mapCatalogProduct, mapItem } from './mapper';
-import { mlItemSchema, mlProductSchema } from './schema';
+import { matchDeterministic, tokenSimilarity } from '@/modules/matcher';
+import { fetchCatalogListings, fetchCatalogProduct, searchCatalog, type CatalogSearchResult } from './catalog';
+import { mapAttributes, mapCatalog } from './mapper';
 import type { ParsedMLUrl } from './parse-url';
 import { MLReaderError, type MLProduct } from './types';
 
-const BASE = 'https://api.mercadolibre.com';
-const TIMEOUT_MS = 8000;
+/** Debajo de esto no nos arriesgamos a afirmar que es el mismo producto. */
+const SIMILITUD_MINIMA = 0.35;
 
-async function get(path: string): Promise<Response> {
-  const token = await getAccessToken();
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-  try {
-    return await fetch(`${BASE}${path}`, {
-      signal: controller.signal,
-      headers: { authorization: `Bearer ${token}`, accept: 'application/json' },
-    });
-  } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new MLReaderError(
-        'API_NO_DISPONIBLE',
-        'Mercado Libre está tardando demasiado en responder. Probá de nuevo en un rato.',
-      );
+export interface ResolucionCatalogo {
+  readonly productId: string;
+  readonly confianza: number;
+  readonly motivo: string;
+}
+
+/**
+ * Elige cuál de los resultados del catálogo es el producto del link.
+ *
+ * Acá se juega la calidad del `ml-reader`: buscando "sony wh 1000xm5" el
+ * primer resultado del catálogo es un ACCESORIO para esos auriculares, no los
+ * auriculares. Por eso no tomamos el primero: lo pasamos por el matcher, que
+ * descarta por marca, capacidad y generación.
+ */
+export function elegirDelCatalogo(
+  titulo: string,
+  resultados: readonly CatalogSearchResult[],
+): ResolucionCatalogo | undefined {
+  return rankearCatalogo(titulo, resultados)[0];
+}
+
+/**
+ * Todos los candidatos aceptables, del mejor al peor.
+ *
+ * Devolvemos varios y no uno solo porque un producto del catálogo puede
+ * existir pero no tener ninguna publicación activa: en ese caso el precio
+ * sería 0 y el veredicto, un disparate. El llamador va probando en orden
+ * hasta encontrar uno que realmente esté a la venta.
+ */
+export function rankearCatalogo(
+  titulo: string,
+  resultados: readonly CatalogSearchResult[],
+): readonly ResolucionCatalogo[] {
+  const base = { title: titulo };
+
+  const puntuados = resultados.map((r) => {
+    const candidato = { title: r.name, ...mapAttributes(r.attributes ?? []) };
+    const veredicto = matchDeterministic(base, candidato);
+    const similitud = tokenSimilarity(titulo, r.name);
+
+    // Un descarte del matcher (marca distinta, capacidad distinta) es
+    // definitivo: lo sacamos de carrera aunque el título se parezca mucho.
+    if (veredicto && !veredicto.match) {
+      return { r, score: -1, motivo: veredicto.reason };
     }
-    throw new MLReaderError(
-      'API_NO_DISPONIBLE',
-      'No pudimos conectarnos con Mercado Libre. Probá de nuevo en un rato.',
-      error,
-    );
-  } finally {
-    clearTimeout(timer);
-  }
+    const score = veredicto?.match ? Math.max(veredicto.confidence, similitud) : similitud;
+    return { r, score, motivo: veredicto?.reason ?? `Similitud de título ${Math.round(similitud * 100)}%.` };
+  });
+
+  return puntuados
+    .filter((p) => p.score >= SIMILITUD_MINIMA)
+    .sort((a, b) => b.score - a.score)
+    .map((p) => ({
+      productId: p.r.id,
+      confianza: Math.round(p.score * 100) / 100,
+      motivo: p.motivo,
+    }));
 }
 
-async function fetchComoItem(itemId: string, url: string): Promise<MLProduct | 'no-existe'> {
-  const res = await get(`/items/${itemId}`);
-  if (res.status === 404) return 'no-existe';
-  if (!res.ok) throw errorDeRespuesta(res.status);
-  const parsed = mlItemSchema.safeParse(await res.json());
-  if (!parsed.success) {
-    throw new MLReaderError(
-      'API_NO_DISPONIBLE',
-      'Mercado Libre devolvió el producto en un formato que no reconocemos.',
-      parsed.error.message.slice(0, 300),
-    );
-  }
-  return mapItem(parsed.data, url);
+async function desdeProductId(productId: string, url: string): Promise<MLProduct> {
+  const [product, listings] = await Promise.all([
+    fetchCatalogProduct(productId),
+    fetchCatalogListings(productId),
+  ]);
+  return mapCatalog(product, listings, url);
 }
 
-async function fetchComoCatalogo(productId: string, url: string): Promise<MLProduct | 'no-existe'> {
-  const res = await get(`/products/${productId}`);
-  if (res.status === 404) return 'no-existe';
-  if (!res.ok) throw errorDeRespuesta(res.status);
-  const parsed = mlProductSchema.safeParse(await res.json());
-  if (!parsed.success) {
-    throw new MLReaderError(
-      'API_NO_DISPONIBLE',
-      'Mercado Libre devolvió el producto en un formato que no reconocemos.',
-      parsed.error.message.slice(0, 300),
-    );
-  }
-  return mapCatalogProduct(parsed.data, url);
+/** `true` si el producto tiene un precio real con el que se pueda comparar. */
+function tienePrecio(p: MLProduct): boolean {
+  return p.price.cents > 0;
 }
 
-function errorDeRespuesta(status: number): MLReaderError {
-  if (status === 401 || status === 403) {
-    return new MLReaderError(
-      'SIN_CREDENCIALES',
-      'Mercado Libre rechazó nuestras credenciales. Hay que revisar la configuración de la app.',
-    );
-  }
-  if (status === 429) {
-    return new MLReaderError(
-      'API_NO_DISPONIBLE',
-      'Mercado Libre nos está limitando por exceso de consultas. Probá de nuevo en unos minutos.',
-    );
-  }
-  return new MLReaderError(
-    'API_NO_DISPONIBLE',
-    'Mercado Libre no está respondiendo bien en este momento. Probá de nuevo en un rato.',
-  );
-}
+/** Cuántos candidatos probamos antes de rendirnos. Cada uno son 2 requests. */
+const MAX_CANDIDATOS = 3;
 
 export async function fetchProduct(parsed: ParsedMLUrl): Promise<MLProduct> {
-  const { itemId, canonicalUrl, esCatalogo } = parsed;
+  const { itemId, canonicalUrl, esCatalogo, tituloDelSlug } = parsed;
 
-  const primero = esCatalogo
-    ? await fetchComoCatalogo(itemId, canonicalUrl)
-    : await fetchComoItem(itemId, canonicalUrl);
-  if (primero !== 'no-existe') return primero;
+  // Caso fácil: el link ya trae el id del catálogo.
+  if (esCatalogo) return desdeProductId(itemId, canonicalUrl);
 
-  // El link decía una cosa y la API dice otra: probamos el otro endpoint.
-  const segundo = esCatalogo
-    ? await fetchComoItem(itemId, canonicalUrl)
-    : await fetchComoCatalogo(itemId, canonicalUrl);
-  if (segundo !== 'no-existe') return segundo;
+  // Caso de publicación: el id no nos sirve, el título del slug sí.
+  if (!tituloDelSlug) {
+    throw new MLReaderError(
+      'ITEM_NO_ENCONTRADO',
+      'Ese link no trae el nombre del producto. Copiá el link desde la página del producto en Mercado Libre, no desde una lista de resultados ni desde un acortador.',
+    );
+  }
+
+  const resultados = await searchCatalog(tituloDelSlug);
+  if (resultados.length === 0) {
+    throw new MLReaderError(
+      'ITEM_NO_ENCONTRADO',
+      'No encontramos ese producto en el catálogo de Mercado Libre Uruguay. Puede ser una publicación sin ficha de catálogo.',
+    );
+  }
+
+  const candidatos = rankearCatalogo(tituloDelSlug, resultados);
+  if (candidatos.length === 0) {
+    throw new MLReaderError(
+      'ITEM_NO_ENCONTRADO',
+      'Encontramos productos parecidos pero ninguno que sea claramente el del link. Preferimos no comparar antes que comparar el producto equivocado.',
+    );
+  }
+
+  // Un producto del catálogo puede existir sin publicaciones activas. Sin
+  // precio no hay nada que comparar, así que seguimos con el siguiente.
+  let sinPrecio = false;
+  for (const candidato of candidatos.slice(0, MAX_CANDIDATOS)) {
+    const producto = await desdeProductId(candidato.productId, canonicalUrl);
+    if (tienePrecio(producto)) return producto;
+    sinPrecio = true;
+  }
 
   throw new MLReaderError(
     'ITEM_NO_ENCONTRADO',
-    'No encontramos ese producto en Mercado Libre. Puede que la publicación se haya dado de baja.',
+    sinPrecio
+      ? 'Encontramos el producto en el catálogo de Mercado Libre pero no tiene publicaciones activas con precio, así que no hay con qué comparar.'
+      : 'No encontramos ese producto en el catálogo de Mercado Libre Uruguay.',
   );
 }

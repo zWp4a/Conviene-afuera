@@ -62,3 +62,62 @@ export const mlProductSchema = z.object({
 });
 
 export type MLProductRaw = z.infer<typeof mlProductSchema>;
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * CATÁLOGO
+ * Las formas reales están capturadas en tests/fixtures/ml-catalog-*.json.
+ * ────────────────────────────────────────────────────────────────────────── */
+
+export const mlCatalogSearchSchema = z.object({
+  paging: z.object({ total: z.number() }).optional(),
+  results: z.array(
+    z.object({
+      id: z.string(),
+      name: z.string(),
+      domain_id: z.string().nullish(),
+      status: z.string().nullish(),
+      attributes: z.array(mlAttributeSchema).optional(),
+      pictures: z.array(z.object({ url: z.string().nullish(), secure_url: z.string().nullish() })).optional(),
+      short_description: z.object({ content: z.string().nullish() }).nullish(),
+    }),
+  ),
+});
+
+export const mlCatalogProductSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  family_name: z.string().nullish(),
+  status: z.string().nullish(),
+  domain_id: z.string().nullish(),
+  permalink: z.string().nullish(),
+  attributes: z.array(mlAttributeSchema).optional(),
+  pictures: z.array(z.object({ url: z.string().nullish(), secure_url: z.string().nullish() })).optional(),
+  short_description: z.object({ content: z.string().nullish() }).nullish(),
+  settings: z.record(z.string(), z.unknown()).nullish(),
+});
+
+export const mlCatalogItemsSchema = z.object({
+  paging: z.object({ total: z.number() }).optional(),
+  results: z.array(
+    z.object({
+      item_id: z.string(),
+      price: z.number().nullish(),
+      original_price: z.number().nullish(),
+      currency_id: z.string().nullish(),
+      condition: z.string().nullish(),
+      warranty: z.string().nullish(),
+      seller_id: z.number().nullish(),
+      official_store_id: z.number().nullish(),
+      category_id: z.string().nullish(),
+      tags: z.array(z.string()).optional(),
+      shipping: z
+        .object({
+          free_shipping: z.boolean().optional(),
+          logistic_type: z.string().nullish(),
+          mode: z.string().nullish(),
+        })
+        .nullish(),
+      sale_terms: z.array(mlAttributeSchema).optional(),
+    }),
+  ),
+});

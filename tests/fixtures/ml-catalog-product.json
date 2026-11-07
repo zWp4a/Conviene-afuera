@@ -1,0 +1,1171 @@
+{
+ "id": "MLU27172671",
+ "status": "active",
+ "domain_id": "MLU-CELLPHONES",
+ "name": "Apple iPhone 15 (128 GB) - Verde",
+ "family_name": "iPhone 15 Dual SIM",
+ "attributes": [
+  {
+   "id": "BRAND",
+   "name": "Marca",
+   "value_id": "9344",
+   "value_name": "Apple",
+   "values": [
+    {
+     "id": "9344",
+     "name": "Apple"
+    }
+   ]
+  },
+  {
+   "id": "LINE",
+   "name": "Línea",
+   "value_id": "25320927",
+   "value_name": "iPhone 15",
+   "values": [
+    {
+     "id": "25320927",
+     "name": "iPhone 15"
+    }
+   ]
+  },
+  {
+   "id": "MODEL",
+   "name": "Modelo",
+   "value_id": "25527344",
+   "value_name": "iPhone 15",
+   "values": [
+    {
+     "id": "25527344",
+     "name": "iPhone 15"
+    }
+   ]
+  },
+  {
+   "id": "IS_DUAL_SIM",
+   "name": "Es Dual SIM",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "COLOR",
+   "name": "Color",
+   "value_id": "52014",
+   "value_name": "Verde",
+   "values": [
+    {
+     "id": "52014",
+     "name": "Verde"
+    }
+   ]
+  },
+  {
+   "id": "INTERNAL_MEMORY",
+   "name": "Memoria interna",
+   "value_id": "84611",
+   "value_name": "128 GB",
+   "values": [
+    {
+     "id": "84611",
+     "name": "128 GB"
+    }
+   ]
+  },
+  {
+   "id": "RAM",
+   "name": "Memoria RAM",
+   "value_id": "469448",
+   "value_name": "6 GB",
+   "values": [
+    {
+     "id": "469448",
+     "name": "6 GB"
+    }
+   ]
+  },
+  {
+   "id": "SIM_CARD_SLOTS_NUMBER",
+   "name": "Cantidad de ranuras para tarjeta SIM",
+   "value_id": "2087812",
+   "value_name": "1",
+   "values": [
+    {
+     "id": "2087812",
+     "name": "1"
+    }
+   ]
+  },
+  {
+   "id": "ESIMS_NUMBER",
+   "name": "Cantidad de eSIMs",
+   "value_id": "11151772",
+   "value_name": "2",
+   "values": [
+    {
+     "id": "11151772",
+     "name": "2"
+    }
+   ]
+  },
+  {
+   "id": "OPERATING_SYSTEM_NAME",
+   "name": "Nombre del sistema operativo",
+   "value_id": "7404961",
+   "value_name": "iOS",
+   "values": [
+    {
+     "id": "7404961",
+     "name": "iOS"
+    }
+   ]
+  },
+  {
+   "id": "MOBILE_NETWORK",
+   "name": "Red móvil",
+   "value_id": "7472027",
+   "value_name": "5G",
+   "values": [
+    {
+     "id": "7472027",
+     "name": "5G"
+    }
+   ]
+  },
+  {
+   "id": "PROCESSOR_MODEL",
+   "name": "Modelo del procesador",
+   "value_id": "13188555",
+   "value_name": "Apple A16 Bionic",
+   "values": [
+    {
+     "id": "13188555",
+     "name": "Apple A16 Bionic"
+    }
+   ]
+  },
+  {
+   "id": "CELLPHONES_ANATEL_HOMOLOGATION_NUMBER",
+   "name": "Número de homologación de Anatel",
+   "value_id": "38968998",
+   "value_name": "127572301993",
+   "values": [
+    {
+     "id": "38968998",
+     "name": "127572301993"
+    }
+   ]
+  },
+  {
+   "id": "MAIN_COLOR",
+   "name": "Color principal",
+   "value_id": "2450314",
+   "value_name": "Verde",
+   "values": [
+    {
+     "id": "2450314",
+     "name": "Verde",
+     "meta": {
+      "rgb": "0DA600"
+     }
+    }
+   ],
+   "meta": {
+    "rgb": "0DA600"
+   }
+  },
+  {
+   "id": "OS_ORIGINAL_VERSION",
+   "name": "Versión original del sistema operativo",
+   "value_id": "24454581",
+   "value_name": "17",
+   "values": [
+    {
+     "id": "24454581",
+     "name": "17"
+    }
+   ]
+  },
+  {
+   "id": "DISPLAY_SIZE",
+   "name": "Tamaño de la pantalla",
+   "value_id": "6892143",
+   "value_name": "6.1 \"",
+   "values": [
+    {
+     "id": "6892143",
+     "name": "6.1 \""
+    }
+   ]
+  },
+  {
+   "id": "DISPLAY_RESOLUTION_TYPE",
+   "name": "Tipo de resolución de la pantalla ",
+   "value_id": "20861300",
+   "value_name": "HDR",
+   "values": [
+    {
+     "id": "20861300",
+     "name": "HDR"
+    }
+   ]
+  },
+  {
+   "id": "DISPLAY_RESOLUTION",
+   "name": "Resolución de la pantalla",
+   "value_id": "17154001",
+   "value_name": "2556 px x 1179 px",
+   "values": [
+    {
+     "id": "17154001",
+     "name": "2556 px x 1179 px"
+    }
+   ]
+  },
+  {
+   "id": "MAIN_REAR_CAMERA_RESOLUTION",
+   "name": "Resolución de la cámara trasera principal",
+   "value_id": "7340647",
+   "value_name": "48 Mpx",
+   "values": [
+    {
+     "id": "7340647",
+     "name": "48 Mpx"
+    }
+   ]
+  },
+  {
+   "id": "REAR_CAMERA_RECORDING_RESOLUTION",
+   "name": "Resolución de video de la cámara trasera",
+   "value_id": "20400060",
+   "value_name": "4K",
+   "values": [
+    {
+     "id": "20400060",
+     "name": "4K"
+    }
+   ]
+  },
+  {
+   "id": "MAIN_FRONT_CAMERA_RESOLUTION",
+   "name": "Resolución de la cámara frontal principal",
+   "value_id": "7207109",
+   "value_name": "12 Mpx",
+   "values": [
+    {
+     "id": "7207109",
+     "name": "12 Mpx"
+    }
+   ]
+  },
+  {
+   "id": "WIDE_ANGLE_CAMERA_RESOLUTION",
+   "name": "Resolución de la cámara gran angular",
+   "value_id": "15265906",
+   "value_name": "48 Mpx",
+   "values": [
+    {
+     "id": "15265906",
+     "name": "48 Mpx"
+    }
+   ]
+  },
+  {
+   "id": "WITH_FINGERPRINT_READER",
+   "name": "Con lector de huella digital",
+   "value_id": "242084",
+   "value_name": "No",
+   "values": [
+    {
+     "id": "242084",
+     "name": "No",
+     "meta": {
+      "value": false
+     }
+    }
+   ],
+   "meta": {
+    "value": false
+   }
+  },
+  {
+   "id": "WITH_FACIAL_RECOGNITION",
+   "name": "Con reconocimiento facial",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "INCLUDES_PENCIL",
+   "name": "Incluye lápiz",
+   "value_id": "242084",
+   "value_name": "No",
+   "values": [
+    {
+     "id": "242084",
+     "name": "No",
+     "meta": {
+      "value": false
+     }
+    }
+   ],
+   "meta": {
+    "value": false
+   }
+  },
+  {
+   "id": "COMPATIBLE_SIM_CARD_SIZES",
+   "name": "Tamaños de tarjeta SIM compatibles",
+   "value_id": "80453",
+   "value_name": "Nano-SIM",
+   "values": [
+    {
+     "id": "80453",
+     "name": "Nano-SIM"
+    }
+   ]
+  },
+  {
+   "id": "RELEASE_MONTH",
+   "name": "Mes de lanzamiento",
+   "value_id": "8275348",
+   "value_name": "Septiembre",
+   "values": [
+    {
+     "id": "8275348",
+     "name": "Septiembre"
+    }
+   ]
+  },
+  {
+   "id": "DISPLAY_TECHNOLOGY",
+   "name": "Tecnología de la pantalla",
+   "value_id": "80491",
+   "value_name": "OLED",
+   "values": [
+    {
+     "id": "80491",
+     "name": "OLED"
+    }
+   ]
+  },
+  {
+   "id": "DISPLAY_TYPE",
+   "name": "Tipo de pantalla",
+   "value_id": "9785211",
+   "value_name": "Super Retina XDR",
+   "values": [
+    {
+     "id": "9785211",
+     "name": "Super Retina XDR"
+    }
+   ]
+  },
+  {
+   "id": "CAMERAS_MAIN_FEATURES",
+   "name": "Características principales de las cámaras",
+   "value_id": null,
+   "value_name": "Photonic engine, Deep fusion, HDR inteligente 4, Modo retrato, Iluminación de retrato con seis efectos, Modo noche, Estilos fotográficos, Amplia gama de colores en fotos y live photos, Estabilización automática",
+   "values": [
+    {
+     "id": "13229449",
+     "name": "Photonic engine"
+    },
+    {
+     "id": "11159138",
+     "name": "Deep fusion"
+    },
+    {
+     "id": "13229440",
+     "name": "HDR inteligente 4"
+    },
+    {
+     "id": "9613699",
+     "name": "Modo retrato"
+    },
+    {
+     "id": "20400068",
+     "name": "Iluminación de retrato con seis efectos"
+    },
+    {
+     "id": "9788716",
+     "name": "Modo noche"
+    },
+    {
+     "id": "13229436",
+     "name": "Estilos fotográficos"
+    },
+    {
+     "id": "20400064",
+     "name": "Amplia gama de colores en fotos y live photos"
+    },
+    {
+     "id": "20400065",
+     "name": "Estabilización automática"
+    }
+   ]
+  },
+  {
+   "id": "REAR_CAMERAS_TYPES",
+   "name": "Tipos de cámaras traseras",
+   "value_id": null,
+   "value_name": "Gran angular, Ultra gran angular",
+   "values": [
+    {
+     "id": "8275354",
+     "name": "Gran angular"
+    },
+    {
+     "id": "20400072",
+     "name": "Ultra gran angular"
+    }
+   ]
+  },
+  {
+   "id": "REAR_CAMERAS_RESOLUTION",
+   "name": "Resolución de las cámaras traseras",
+   "value_id": "7732741",
+   "value_name": "48 Mpx/12 Mpx",
+   "values": [
+    {
+     "id": "7732741",
+     "name": "48 Mpx/12 Mpx"
+    }
+   ]
+  },
+  {
+   "id": "REAR_CAMERA_APERTURE",
+   "name": "Apertura del diafragma de la cámara trasera",
+   "value_id": "11159135",
+   "value_name": "f 1.6/f 2.4",
+   "values": [
+    {
+     "id": "11159135",
+     "name": "f 1.6/f 2.4"
+    }
+   ]
+  },
+  {
+   "id": "FRONT_CAMERAS_TYPES",
+   "name": "Tipos de cámaras frontales",
+   "value_id": "24454583",
+   "value_name": "TrueDepth",
+   "values": [
+    {
+     "id": "24454583",
+     "name": "TrueDepth"
+    }
+   ]
+  },
+  {
+   "id": "FRONT_CAMERAS_RESOLUTION",
+   "name": "Resolución de las cámaras frontales",
+   "value_id": "13028600",
+   "value_name": "12 Mpx",
+   "values": [
+    {
+     "id": "13028600",
+     "name": "12 Mpx"
+    }
+   ]
+  },
+  {
+   "id": "FRONT_CAMERA_APERTURE",
+   "name": "Apertura del diafragma de la cámara frontal",
+   "value_id": "7439050",
+   "value_name": "f 1.9",
+   "values": [
+    {
+     "id": "7439050",
+     "name": "f 1.9"
+    }
+   ]
+  },
+  {
+   "id": "IP_RATING",
+   "name": "Clasificación IP",
+   "value_id": "8275373",
+   "value_name": "IP68",
+   "values": [
+    {
+     "id": "8275373",
+     "name": "IP68"
+    }
+   ]
+  },
+  {
+   "id": "BATTERY_TYPE",
+   "name": "Tipo de batería",
+   "value_id": "95013",
+   "value_name": "Ion de litio",
+   "values": [
+    {
+     "id": "95013",
+     "name": "Ion de litio"
+    }
+   ]
+  },
+  {
+   "id": "CHARGE_CONNECTOR_TYPE",
+   "name": "Tipo de conector de carga",
+   "value_id": "8275367",
+   "value_name": "USB-C",
+   "values": [
+    {
+     "id": "8275367",
+     "name": "USB-C"
+    }
+   ]
+  },
+  {
+   "id": "RELEASE_YEAR",
+   "name": "Año de lanzamiento",
+   "value_id": "13579825",
+   "value_name": "2023",
+   "values": [
+    {
+     "id": "13579825",
+     "name": "2023"
+    }
+   ]
+  },
+  {
+   "id": "REAR_CAMERAS_NUMBER",
+   "name": "Cantidad de cámaras traseras",
+   "value_id": "7477262",
+   "value_name": "2",
+   "values": [
+    {
+     "id": "7477262",
+     "name": "2"
+    }
+   ]
+  },
+  {
+   "id": "FRONT_CAMERAS_NUMBER",
+   "name": "Cantidad de cámaras frontales",
+   "value_id": "7477216",
+   "value_name": "1",
+   "values": [
+    {
+     "id": "7477216",
+     "name": "1"
+    }
+   ]
+  },
+  {
+   "id": "WEIGHT",
+   "name": "Peso",
+   "value_id": "2087815",
+   "value_name": "171 g",
+   "values": [
+    {
+     "id": "2087815",
+     "name": "171 g"
+    }
+   ]
+  },
+  {
+   "id": "HEIGHT",
+   "name": "Altura",
+   "value_id": "48663417",
+   "value_name": "14.76 cm",
+   "values": [
+    {
+     "id": "48663417",
+     "name": "14.76 cm"
+    }
+   ]
+  },
+  {
+   "id": "WIDTH",
+   "name": "Ancho",
+   "value_id": "37845458",
+   "value_name": "7.16 cm",
+   "values": [
+    {
+     "id": "37845458",
+     "name": "7.16 cm"
+    }
+   ]
+  },
+  {
+   "id": "DEPTH",
+   "name": "Profundidad",
+   "value_id": "6850489",
+   "value_name": "7.8 mm",
+   "values": [
+    {
+     "id": "6850489",
+     "name": "7.8 mm"
+    }
+   ]
+  },
+  {
+   "id": "DISPLAY_PIXELS_PER_INCH",
+   "name": "Píxeles por pulgada de la pantalla",
+   "value_id": "58494531",
+   "value_name": "460 ppi",
+   "values": [
+    {
+     "id": "58494531",
+     "name": "460 ppi"
+    }
+   ]
+  },
+  {
+   "id": "MAX_DISPLAY_BRIGHTNESS",
+   "name": "Brillo máximo de la pantalla",
+   "value_id": "13188552",
+   "value_name": "2000 cd/m²",
+   "values": [
+    {
+     "id": "13188552",
+     "name": "2000 cd/m²"
+    }
+   ]
+  },
+  {
+   "id": "OPTICAL_ZOOM",
+   "name": "Zoom óptico",
+   "value_id": "1344",
+   "value_name": "2x",
+   "values": [
+    {
+     "id": "1344",
+     "name": "2x"
+    }
+   ]
+  },
+  {
+   "id": "DIGITAL_ZOOM",
+   "name": "Zoom digital",
+   "value_id": "7199637",
+   "value_name": "10x",
+   "values": [
+    {
+     "id": "7199637",
+     "name": "10x"
+    }
+   ]
+  },
+  {
+   "id": "FRONT_CAMERA_RECORDING_RESOLUTION",
+   "name": "Resolución de video de la cámara frontal",
+   "value_id": "20400059",
+   "value_name": "4K",
+   "values": [
+    {
+     "id": "20400059",
+     "name": "4K"
+    }
+   ]
+  },
+  {
+   "id": "WITH_ESIM",
+   "name": "Con eSIM",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_TOUCHSCREEN_DISPLAY",
+   "name": "Con pantalla táctil",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_PHYSICAL_QWERTY_KEYBOARD",
+   "name": "Con teclado QWERTY físico",
+   "value_id": "242084",
+   "value_name": "No",
+   "values": [
+    {
+     "id": "242084",
+     "name": "No",
+     "meta": {
+      "value": false
+     }
+    }
+   ],
+   "meta": {
+    "value": false
+   }
+  },
+  {
+   "id": "WITH_CAMERA",
+   "name": "Con cámara",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_FRONT_CAMERA_FLASH",
+   "name": "Con flash en la cámara frontal",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_USB_CONNECTOR",
+   "name": "Con conector USB",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_3_5_MM_JACK_CONNECTOR",
+   "name": "Con conector jack 3.5 mm",
+   "value_id": "242084",
+   "value_name": "No",
+   "values": [
+    {
+     "id": "242084",
+     "name": "No",
+     "meta": {
+      "value": false
+     }
+    }
+   ],
+   "meta": {
+    "value": false
+   }
+  },
+  {
+   "id": "WITH_WIFI",
+   "name": "Con Wi-Fi",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_GPS",
+   "name": "Con GPS",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_BLUETOOTH",
+   "name": "Con Bluetooth",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_NFC",
+   "name": "Con NFC",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_ACCELEROMETER",
+   "name": "Con acelerómetro",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_PROXIMITY_SENSOR",
+   "name": "Con sensor de proximidad",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_GYROSCOPE",
+   "name": "Con giroscopio",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_COMPASS",
+   "name": "Con brújula",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_BAROMETER",
+   "name": "Con barómetro",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_SOS_BUTTON",
+   "name": "Con botón SOS",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "IS_SPLASH_RESISTANT",
+   "name": "Es resistente a salpicaduras",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "IS_WATER_RESISTANT",
+   "name": "Es resistente al agua",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "IS_DUST_RESISTANT",
+   "name": "Es resistente al polvo",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "IS_DROP_RESISTANT",
+   "name": "Es resistente a caídas",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_FAST_CHARGING",
+   "name": "Con carga rápida",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_WIRELESS_CHARGING",
+   "name": "Con carga inalámbrica",
+   "value_id": "242085",
+   "value_name": "Sí",
+   "values": [
+    {
+     "id": "242085",
+     "name": "Sí",
+     "meta": {
+      "value": true
+     }
+    }
+   ],
+   "meta": {
+    "value": true
+   }
+  },
+  {
+   "id": "WITH_REMOVABLE_BATTERY",
+   "name": "Con batería removible",
+   "value_id": "242084",
+   "value_name": "No",
+   "values": [
+    {
+     "id": "242084",
+     "name": "No",
+     "meta": {
+      "value": false
+     }
+    }
+   ],
+   "meta": {
+    "value": false
+   }
+  },
+  {
+   "id": "MPN",
+   "name": "MPN",
+   "value_id": null,
+   "value_name": "MTMM3E/A, MTP53BE/A",
+   "values": [
+    {
+     "id": "24454248",
+     "name": "MTMM3E/A"
+    },
+    {
+     "id": "24509038",
+     "name": "MTP53BE/A"
+    }
+   ]
+  }
+ ],
+ "pictures": [
+  {
+   "id": "711677-MLA95935182539_102025",
+   "url": "https://http2.mlstatic.com/D_NQ_NP_711677-MLA95935182539_102025-F.jpg",
+   "suggested_for_picker": null,
+   "max_width": 706,
+   "max_height": 1000,
+   "source_metadata": null,
+   "tags": [
+    "CAROUSEL"
+   ]
+  },
+  {
+   "id": "783732-MLA95935142993_102025",
+   "url": "https://http2.mlstatic.com/D_NQ_NP_783732-MLA95935142993_102025-F.jpg",
+   "suggested_for_picker": null,
+   "max_width": 591,
+   "max_height": 1200,
+   "source_metadata": null,
+   "tags": [
+    "CAROUSEL"
+   ]
+  }
+ ],
+ "short_description": {
+  "type": "plaintext",
+  "content": "El iPhone 15 viene con la Dynamic Island, cámara gran angular de 48 MP, entrada USB-C y un resistente vidrio con infusión de color en un diseño de aluminio.\n\nLA DYNAMIC ISLAND LLEGA AL IPHONE 15 — La Dynamic Island te muestra alertas y Actividades en Vivo para que no te pierdas nada mientras haces de todo. Puedes ver cuánto falta para que llegue el auto que pediste, saber si alguien te está llamando, consultar el estado de tu vuelo y mucho más.\n\nDISEÑO INNOVADOR — El iPhone 15 tiene un robusto vidrio con infusión de color en un diseño de aluminio. Es resistente a las salpicaduras, al agua y al polvo, y viene con frente de Ceramic Shield, más duro que cualquier vidrio de smartphone. Además, la pantalla Super Retina XDR de 6.1 pulgadas es hasta dos veces más brillante bajo el sol en comparación con el iPhone 14.\n\nCÁMARA GRAN ANGULAR DE 48 MP CON TELEOBJETIVO DE 2X — La cámara gran angular de 48 MP hace capturas en superalta resolución para que sea más fácil que nunca tomar fotos espectaculares y con gran nivel de detalle. Y el teleobjetivo de 2x de calidad óptica te permite encuadrar tomas perfectas en primer plano.\n\nRETRATOS DE ÚLTIMA GENERACIÓN — Captura retratos con muchísimos más detalles y color. Y cambia el enfoque de un sujeto a otro con un simple toque, incluso después de tomar la foto.\n\nSUPERPOTENTE CHIP A16 BIONIC — El ultrarrápido chip A16 Bionic brinda la potencia necesaria para hacer realidad las funcionalidades más avanzadas, como la fotografía computacional, las transiciones animadas de la Dynamic Island y el uso de Aislamiento de Voz en las llamadas. Además, su increíble eficiencia ayuda a ofrecer una duración de batería para todo el día.\n\nCONEXIÓN USB-C — Con el nuevo conector USB-C puedes cargar tu Mac o iPad con el mismo cable que usas para cargar el iPhone 15. Incluso puedes usar el iPhone 15 para cargar el Apple Watch o los AirPods.\n\nFUNCIONALIDAD ESENCIAL DE SEGURIDAD — Con Detección de Choques, el iPhone puede identificar si sufres un accidente de auto grave y pedir ayuda cuando tú no puedes.\n\nINNOVACIONES QUE MARCAN LA DIFERENCIA — El iPhone cuenta con tecnologías de privacidad que te ayudan a mantener el control de tus datos. Está fabricado con más materiales reciclados para reducir su impacto medioambiental. Y viene con funcionalidades integradas que lo hacen accesible para todo el mundo.\n\n"
+ },
+ "settings": {
+  "content": "fixed",
+  "listing_strategy": "catalog_required",
+  "exclusive": false,
+  "with_enhanced_pictures": false,
+  "base_site_product_id": null,
+  "ttr": "2026-11-07T17:37:54.003698491"
+ }
+}

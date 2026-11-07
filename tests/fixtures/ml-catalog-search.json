@@ -1,0 +1,486 @@
+{
+ "paging": {
+  "total": 10000,
+  "limit": 10,
+  "offset": 0,
+  "last": "MLU12866686"
+ },
+ "results": [
+  {
+   "id": "MLU27172677",
+   "name": "Apple iPhone 15 128 GB Negro",
+   "domain_id": "MLU-CELLPHONES",
+   "status": "active",
+   "attributes": [
+    {
+     "id": "BRAND",
+     "name": "Marca",
+     "value_id": "9344",
+     "value_name": "Apple",
+     "values": [
+      {
+       "id": "9344",
+       "name": "Apple"
+      }
+     ]
+    },
+    {
+     "id": "LINE",
+     "name": "Línea",
+     "value_id": "25320927",
+     "value_name": "iPhone 15",
+     "values": [
+      {
+       "id": "25320927",
+       "name": "iPhone 15"
+      }
+     ]
+    },
+    {
+     "id": "MODEL",
+     "name": "Modelo",
+     "value_id": "25527344",
+     "value_name": "iPhone 15",
+     "values": [
+      {
+       "id": "25527344",
+       "name": "iPhone 15"
+      }
+     ]
+    },
+    {
+     "id": "IS_DUAL_SIM",
+     "name": "Es Dual SIM",
+     "value_id": "242085",
+     "value_name": "Sí",
+     "values": [
+      {
+       "id": "242085",
+       "name": "Sí"
+      }
+     ],
+     "meta": {
+      "value": true
+     }
+    },
+    {
+     "id": "COLOR",
+     "name": "Color",
+     "value_id": "52049",
+     "value_name": "Negro",
+     "values": [
+      {
+       "id": "52049",
+       "name": "Negro"
+      }
+     ]
+    },
+    {
+     "id": "INTERNAL_MEMORY",
+     "name": "Memoria interna",
+     "value_id": "84611",
+     "value_name": "128 GB",
+     "values": [
+      {
+       "id": "84611",
+       "name": "128 GB"
+      }
+     ]
+    },
+    {
+     "id": "RAM",
+     "name": "Memoria RAM",
+     "value_id": "469448",
+     "value_name": "6 GB",
+     "values": [
+      {
+       "id": "469448",
+       "name": "6 GB"
+      }
+     ]
+    },
+    {
+     "id": "SIM_CARD_SLOTS_NUMBER",
+     "name": "Cantidad de ranuras para tarjeta SIM",
+     "value_id": "2087812",
+     "value_name": "1",
+     "values": [
+      {
+       "id": "2087812",
+       "name": "1"
+      }
+     ]
+    }
+   ],
+   "pictures": [
+    {
+     "id": "681238-MLA95494971394_102025",
+     "url": "https://http2.mlstatic.com/D_NQ_NP_681238-MLA95494971394_102025-F.jpg",
+     "max_width": "706",
+     "max_height": "1000"
+    }
+   ],
+   "short_description": {
+    "type": "plaintext",
+    "content": "El iPhone 15 viene con la Dynamic Island, cámara gran angular de 48 MP, entrada USB-C y un resistente vidrio con infusión de color en un diseño de aluminio.\n\nLA DYNAMIC ISLAND LLEGA AL IPHONE 15 — La Dynamic Island te muestra alertas y Actividades en Vivo para que no te pierdas nada mientras haces de todo. Puedes ver cuánto falta para que llegue el auto que pediste, saber si alguien te está llamando, consultar el estado de tu vuelo y mucho más.\n\nDISEÑO INNOVADOR — El iPhone 15 tiene un robusto vidrio con infusión de color en un diseño de aluminio. Es resistente a las salpicaduras, al agua y al polvo, y viene con frente de Ceramic Shield, más duro que cualquier vidrio de smartphone. Además, la pantalla Super Retina XDR de 6.1 pulgadas es hasta dos veces más brillante bajo el sol en comparación con el iPhone 14.\n\nCÁMARA GRAN ANGULAR DE 48 MP CON TELEOBJETIVO DE 2X — La cámara gran angular de 48 MP hace capturas en superalta resolución para que sea más fácil que nunca tomar fotos espectaculares y con gran nivel de detalle. Y el teleobjetivo de 2x de calidad óptica te permite encuadrar tomas perfectas en primer plano.\n\nRETRATOS DE ÚLTIMA GENERACIÓN — Captura retratos con muchísimos más detalles y color. Y cambia el enfoque de un sujeto a otro con un simple toque, incluso después de tomar la foto.\n\nSUPERPOTENTE CHIP A16 BIONIC — El ultrarrápido chip A16 Bionic brinda la potencia necesaria para hacer realidad las funcionalidades más avanzadas, como la fotografía computacional, las transiciones animadas de la Dynamic Island y el uso de Aislamiento de Voz en las llamadas. Además, su increíble eficiencia ayuda a ofrecer una duración de batería para todo el día.\n\nCONEXIÓN USB-C — Con el nuevo conector USB-C puedes cargar tu Mac o iPad con el mismo cable que usas para cargar el iPhone 15. Incluso puedes usar el iPhone 15 para cargar el Apple Watch o los AirPods.\n\nFUNCIONALIDAD ESENCIAL DE SEGURIDAD — Con Detección de Choques, el iPhone puede identificar si sufres un accidente de auto grave y pedir ayuda cuando tú no puedes.\n\nINNOVACIONES QUE MARCAN LA DIFERENCIA — El iPhone cuenta con tecnologías de privacidad que te ayudan a mantener el control de tus datos. Está fabricado con más materiales reciclados para reducir su impacto medioambiental. Y viene con funcionalidades integradas que lo hacen accesible para todo el mundo.\n\n"
+   }
+  },
+  {
+   "id": "MLU27172671",
+   "name": "Apple iPhone 15 (128 GB) - Verde",
+   "domain_id": "MLU-CELLPHONES",
+   "status": "active",
+   "attributes": [
+    {
+     "id": "BRAND",
+     "name": "Marca",
+     "value_id": "9344",
+     "value_name": "Apple",
+     "values": [
+      {
+       "id": "9344",
+       "name": "Apple"
+      }
+     ]
+    },
+    {
+     "id": "LINE",
+     "name": "Línea",
+     "value_id": "25320927",
+     "value_name": "iPhone 15",
+     "values": [
+      {
+       "id": "25320927",
+       "name": "iPhone 15"
+      }
+     ]
+    },
+    {
+     "id": "MODEL",
+     "name": "Modelo",
+     "value_id": "25527344",
+     "value_name": "iPhone 15",
+     "values": [
+      {
+       "id": "25527344",
+       "name": "iPhone 15"
+      }
+     ]
+    },
+    {
+     "id": "IS_DUAL_SIM",
+     "name": "Es Dual SIM",
+     "value_id": "242085",
+     "value_name": "Sí",
+     "values": [
+      {
+       "id": "242085",
+       "name": "Sí"
+      }
+     ],
+     "meta": {
+      "value": true
+     }
+    },
+    {
+     "id": "COLOR",
+     "name": "Color",
+     "value_id": "52014",
+     "value_name": "Verde",
+     "values": [
+      {
+       "id": "52014",
+       "name": "Verde"
+      }
+     ]
+    },
+    {
+     "id": "INTERNAL_MEMORY",
+     "name": "Memoria interna",
+     "value_id": "84611",
+     "value_name": "128 GB",
+     "values": [
+      {
+       "id": "84611",
+       "name": "128 GB"
+      }
+     ]
+    },
+    {
+     "id": "RAM",
+     "name": "Memoria RAM",
+     "value_id": "469448",
+     "value_name": "6 GB",
+     "values": [
+      {
+       "id": "469448",
+       "name": "6 GB"
+      }
+     ]
+    },
+    {
+     "id": "SIM_CARD_SLOTS_NUMBER",
+     "name": "Cantidad de ranuras para tarjeta SIM",
+     "value_id": "2087812",
+     "value_name": "1",
+     "values": [
+      {
+       "id": "2087812",
+       "name": "1"
+      }
+     ]
+    }
+   ],
+   "pictures": [
+    {
+     "id": "711677-MLA95935182539_102025",
+     "url": "https://http2.mlstatic.com/D_NQ_NP_711677-MLA95935182539_102025-F.jpg",
+     "max_width": "706",
+     "max_height": "1000"
+    }
+   ],
+   "short_description": {
+    "type": "plaintext",
+    "content": "El iPhone 15 viene con la Dynamic Island, cámara gran angular de 48 MP, entrada USB-C y un resistente vidrio con infusión de color en un diseño de aluminio.\n\nLA DYNAMIC ISLAND LLEGA AL IPHONE 15 — La Dynamic Island te muestra alertas y Actividades en Vivo para que no te pierdas nada mientras haces de todo. Puedes ver cuánto falta para que llegue el auto que pediste, saber si alguien te está llamando, consultar el estado de tu vuelo y mucho más.\n\nDISEÑO INNOVADOR — El iPhone 15 tiene un robusto vidrio con infusión de color en un diseño de aluminio. Es resistente a las salpicaduras, al agua y al polvo, y viene con frente de Ceramic Shield, más duro que cualquier vidrio de smartphone. Además, la pantalla Super Retina XDR de 6.1 pulgadas es hasta dos veces más brillante bajo el sol en comparación con el iPhone 14.\n\nCÁMARA GRAN ANGULAR DE 48 MP CON TELEOBJETIVO DE 2X — La cámara gran angular de 48 MP hace capturas en superalta resolución para que sea más fácil que nunca tomar fotos espectaculares y con gran nivel de detalle. Y el teleobjetivo de 2x de calidad óptica te permite encuadrar tomas perfectas en primer plano.\n\nRETRATOS DE ÚLTIMA GENERACIÓN — Captura retratos con muchísimos más detalles y color. Y cambia el enfoque de un sujeto a otro con un simple toque, incluso después de tomar la foto.\n\nSUPERPOTENTE CHIP A16 BIONIC — El ultrarrápido chip A16 Bionic brinda la potencia necesaria para hacer realidad las funcionalidades más avanzadas, como la fotografía computacional, las transiciones animadas de la Dynamic Island y el uso de Aislamiento de Voz en las llamadas. Además, su increíble eficiencia ayuda a ofrecer una duración de batería para todo el día.\n\nCONEXIÓN USB-C — Con el nuevo conector USB-C puedes cargar tu Mac o iPad con el mismo cable que usas para cargar el iPhone 15. Incluso puedes usar el iPhone 15 para cargar el Apple Watch o los AirPods.\n\nFUNCIONALIDAD ESENCIAL DE SEGURIDAD — Con Detección de Choques, el iPhone puede identificar si sufres un accidente de auto grave y pedir ayuda cuando tú no puedes.\n\nINNOVACIONES QUE MARCAN LA DIFERENCIA — El iPhone cuenta con tecnologías de privacidad que te ayudan a mantener el control de tus datos. Está fabricado con más materiales reciclados para reducir su impacto medioambiental. Y viene con funcionalidades integradas que lo hacen accesible para todo el mundo.\n\n"
+   }
+  },
+  {
+   "id": "MLU27172667",
+   "name": "Apple iPhone 15 (128 GB) - Azul",
+   "domain_id": "MLU-CELLPHONES",
+   "status": "active",
+   "attributes": [
+    {
+     "id": "BRAND",
+     "name": "Marca",
+     "value_id": "9344",
+     "value_name": "Apple",
+     "values": [
+      {
+       "id": "9344",
+       "name": "Apple"
+      }
+     ]
+    },
+    {
+     "id": "LINE",
+     "name": "Línea",
+     "value_id": "25320927",
+     "value_name": "iPhone 15",
+     "values": [
+      {
+       "id": "25320927",
+       "name": "iPhone 15"
+      }
+     ]
+    },
+    {
+     "id": "MODEL",
+     "name": "Modelo",
+     "value_id": "25527344",
+     "value_name": "iPhone 15",
+     "values": [
+      {
+       "id": "25527344",
+       "name": "iPhone 15"
+      }
+     ]
+    },
+    {
+     "id": "IS_DUAL_SIM",
+     "name": "Es Dual SIM",
+     "value_id": "242085",
+     "value_name": "Sí",
+     "values": [
+      {
+       "id": "242085",
+       "name": "Sí"
+      }
+     ],
+     "meta": {
+      "value": true
+     }
+    },
+    {
+     "id": "COLOR",
+     "name": "Color",
+     "value_id": "52028",
+     "value_name": "Azul",
+     "values": [
+      {
+       "id": "52028",
+       "name": "Azul"
+      }
+     ]
+    },
+    {
+     "id": "INTERNAL_MEMORY",
+     "name": "Memoria interna",
+     "value_id": "84611",
+     "value_name": "128 GB",
+     "values": [
+      {
+       "id": "84611",
+       "name": "128 GB"
+      }
+     ]
+    },
+    {
+     "id": "RAM",
+     "name": "Memoria RAM",
+     "value_id": "469448",
+     "value_name": "6 GB",
+     "values": [
+      {
+       "id": "469448",
+       "name": "6 GB"
+      }
+     ]
+    },
+    {
+     "id": "SIM_CARD_SLOTS_NUMBER",
+     "name": "Cantidad de ranuras para tarjeta SIM",
+     "value_id": "2087812",
+     "value_name": "1",
+     "values": [
+      {
+       "id": "2087812",
+       "name": "1"
+      }
+     ]
+    }
+   ],
+   "pictures": [
+    {
+     "id": "961006-MLA95493133008_102025",
+     "url": "https://http2.mlstatic.com/D_NQ_NP_961006-MLA95493133008_102025-F.jpg",
+     "max_width": "706",
+     "max_height": "1000"
+    }
+   ],
+   "short_description": {
+    "type": "plaintext",
+    "content": "El iPhone 15 viene con la Dynamic Island, cámara gran angular de 48 MP, entrada USB-C y un resistente vidrio con infusión de color en un diseño de aluminio.\n\nLA DYNAMIC ISLAND LLEGA AL IPHONE 15 — La Dynamic Island te muestra alertas y Actividades en Vivo para que no te pierdas nada mientras haces de todo. Puedes ver cuánto falta para que llegue el auto que pediste, saber si alguien te está llamando, consultar el estado de tu vuelo y mucho más.\n\nDISEÑO INNOVADOR — El iPhone 15 tiene un robusto vidrio con infusión de color en un diseño de aluminio. Es resistente a las salpicaduras, al agua y al polvo, y viene con frente de Ceramic Shield, más duro que cualquier vidrio de smartphone. Además, la pantalla Super Retina XDR de 6.1 pulgadas es hasta dos veces más brillante bajo el sol en comparación con el iPhone 14.\n\nCÁMARA GRAN ANGULAR DE 48 MP CON TELEOBJETIVO DE 2X — La cámara gran angular de 48 MP hace capturas en superalta resolución para que sea más fácil que nunca tomar fotos espectaculares y con gran nivel de detalle. Y el teleobjetivo de 2x de calidad óptica te permite encuadrar tomas perfectas en primer plano.\n\nRETRATOS DE ÚLTIMA GENERACIÓN — Captura retratos con muchísimos más detalles y color. Y cambia el enfoque de un sujeto a otro con un simple toque, incluso después de tomar la foto.\n\nSUPERPOTENTE CHIP A16 BIONIC — El ultrarrápido chip A16 Bionic brinda la potencia necesaria para hacer realidad las funcionalidades más avanzadas, como la fotografía computacional, las transiciones animadas de la Dynamic Island y el uso de Aislamiento de Voz en las llamadas. Además, su increíble eficiencia ayuda a ofrecer una duración de batería para todo el día.\n\nCONEXIÓN USB-C — Con el nuevo conector USB-C puedes cargar tu Mac o iPad con el mismo cable que usas para cargar el iPhone 15. Incluso puedes usar el iPhone 15 para cargar el Apple Watch o los AirPods.\n\nFUNCIONALIDAD ESENCIAL DE SEGURIDAD — Con Detección de Choques, el iPhone puede identificar si sufres un accidente de auto grave y pedir ayuda cuando tú no puedes.\n\nINNOVACIONES QUE MARCAN LA DIFERENCIA — El iPhone cuenta con tecnologías de privacidad que te ayudan a mantener el control de tus datos. Está fabricado con más materiales reciclados para reducir su impacto medioambiental. Y viene con funcionalidades integradas que lo hacen accesible para todo el mundo.\n\n"
+   }
+  },
+  {
+   "id": "MLU27172678",
+   "name": "Apple Iphone 15 128 Gb Rosa",
+   "domain_id": "MLU-CELLPHONES",
+   "status": "active",
+   "attributes": [
+    {
+     "id": "BRAND",
+     "name": "Marca",
+     "value_id": "9344",
+     "value_name": "Apple",
+     "values": [
+      {
+       "id": "9344",
+       "name": "Apple"
+      }
+     ]
+    },
+    {
+     "id": "LINE",
+     "name": "Línea",
+     "value_id": "25320927",
+     "value_name": "iPhone 15",
+     "values": [
+      {
+       "id": "25320927",
+       "name": "iPhone 15"
+      }
+     ]
+    },
+    {
+     "id": "MODEL",
+     "name": "Modelo",
+     "value_id": "25527344",
+     "value_name": "iPhone 15",
+     "values": [
+      {
+       "id": "25527344",
+       "name": "iPhone 15"
+      }
+     ]
+    },
+    {
+     "id": "IS_DUAL_SIM",
+     "name": "Es Dual SIM",
+     "value_id": "242085",
+     "value_name": "Sí",
+     "values": [
+      {
+       "id": "242085",
+       "name": "Sí"
+      }
+     ],
+     "meta": {
+      "value": true
+     }
+    },
+    {
+     "id": "COLOR",
+     "name": "Color",
+     "value_id": "51994",
+     "value_name": "Rosa",
+     "values": [
+      {
+       "id": "51994",
+       "name": "Rosa"
+      }
+     ]
+    },
+    {
+     "id": "INTERNAL_MEMORY",
+     "name": "Memoria interna",
+     "value_id": "84611",
+     "value_name": "128 GB",
+     "values": [
+      {
+       "id": "84611",
+       "name": "128 GB"
+      }
+     ]
+    },
+    {
+     "id": "RAM",
+     "name": "Memoria RAM",
+     "value_id": "469448",
+     "value_name": "6 GB",
+     "values": [
+      {
+       "id": "469448",
+       "name": "6 GB"
+      }
+     ]
+    },
+    {
+     "id": "SIM_CARD_SLOTS_NUMBER",
+     "name": "Cantidad de ranuras para tarjeta SIM",
+     "value_id": "2087812",
+     "value_name": "1",
+     "values": [
+      {
+       "id": "2087812",
+       "name": "1"
+      }
+     ]
+    }
+   ],
+   "pictures": [
+    {
+     "id": "630721-MLA95934794179_102025",
+     "url": "https://http2.mlstatic.com/D_NQ_NP_630721-MLA95934794179_102025-F.jpg",
+     "max_width": "706",
+     "max_height": "1000"
+    }
+   ],
+   "short_description": {
+    "type": "plaintext",
+    "content": "El Apple iPhone 15 de 128GB en color Rosa combina un diseño sofisticado de vidrio infusionado con color y bordes de aluminio, destacando por su elegante acabado mate y la intuitiva Dynamic Island. Equipado con el potente chip A16 Bionic y un avanzado sistema de cámara principal de 48 MP, este dispositivo ofrece un rendimiento excepcional y fotografías de nivel profesional con un detalle asombroso. Con la practicidad de su nuevo conector USB-C y una pantalla Super Retina XDR de gran nitidez, es el equilibrio perfecto entre estilo, potencia y funcionalidad para el día a día."
+   }
+  }
+ ]
+}

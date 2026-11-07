@@ -25,6 +25,18 @@ const HOSTS_ML_OTRO_PAIS = /\.mercadolibre\.com(\.[a-z]{2})?$|\.mercadolivre\.co
 export interface ParsedMLUrl {
   /** Item id normalizado, siempre sin guión: "MLU123456789". */
   readonly itemId: string;
+  /**
+   * Título que viene en el slug de la URL, ya legible.
+   *
+   * Esto importa más de lo que parece: `/items/{id}` está cerrado para apps
+   * no certificadas, así que el slug es nuestra única puerta de entrada al
+   * producto en los links de artículo. Y no es scraping: viene en el texto
+   * que el usuario pegó.
+   *
+   * De `MLU-123-apple-iphone-15-128-gb-negro-_JM` sale
+   * "apple iphone 15 128 gb negro".
+   */
+  readonly tituloDelSlug?: string;
   /** `true` si el link es de una página de catálogo (/p/MLUxxxx). */
   readonly esCatalogo: boolean;
   /** URL canónica, sin query string de tracking. */
@@ -76,12 +88,36 @@ export function parseMLUrl(input: string): ParsedMLUrl {
   const itemId = `MLU${match[1]}`;
   const esCatalogo = /\/p\/MLU/i.test(url.pathname);
   const variationId = url.searchParams.get('variation') ?? undefined;
+  const tituloDelSlug = extraerTituloDelSlug(url.pathname);
 
   const canonicalUrl = esCatalogo
     ? `https://www.mercadolibre.com.uy/p/${itemId}`
     : `https://articulo.mercadolibre.com.uy/${itemId.replace(/^MLU/, 'MLU-')}-_JM`;
 
-  return { itemId, esCatalogo, canonicalUrl, ...(variationId ? { variationId } : {}) };
+  return {
+    itemId,
+    esCatalogo,
+    canonicalUrl,
+    ...(variationId ? { variationId } : {}),
+    ...(tituloDelSlug ? { tituloDelSlug } : {}),
+  };
+}
+
+/**
+ * Saca el título legible del slug de la URL.
+ * `/MLU-472674662-modem-lte-a-300-mbs-_JM` → "modem lte a 300 mbs"
+ * Devuelve `undefined` si el slug no tiene nada aprovechable.
+ */
+export function extraerTituloDelSlug(pathname: string): string | undefined {
+  const ultimo = pathname.split('/').filter(Boolean).pop() ?? '';
+  const sinId = ultimo.replace(/^MLU-?\d+-?/i, '');
+  const texto = decodeURIComponent(sinId)
+    .replace(/-?_JM.*$/i, '')
+    .replace(/-/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  // Menos de 4 caracteres o sin letras no sirve para buscar.
+  return texto.length >= 4 && /[a-záéíóúñ]/i.test(texto) ? texto : undefined;
 }
 
 /** Versión que no tira: útil para validar el input en la UI. */
