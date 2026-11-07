@@ -1,0 +1,20 @@
+{
+  "id": "MLU12345678",
+  "name": "Sony WH-1000XM5",
+  "category_id": "MLU1002",
+  "pictures": [{ "secure_url": "https://http2.mlstatic.com/D_NQ_NP_xm5.jpg" }],
+  "attributes": [
+    { "id": "BRAND", "name": "Marca", "value_name": "Sony" },
+    { "id": "ALPHANUMERIC_MODEL", "name": "Modelo alfanumérico", "value_name": "WH-1000XM5" },
+    { "id": "EAN", "name": "EAN", "value_name": "027242923072" },
+    { "id": "WEIGHT", "name": "Peso", "value_name": "0.25 kg" }
+  ],
+  "buy_box_winner": {
+    "item_id": "MLU987654321",
+    "price": 18500,
+    "currency_id": "UYU",
+    "seller_id": 777,
+    "warranty": "Garantía del vendedor: 6 meses",
+    "shipping": { "free_shipping": true }
+  }
+}

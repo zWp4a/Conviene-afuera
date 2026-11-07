@@ -1,4 +1,5 @@
 import { ADUANA_UY, FUENTE_OFICIAL_URL } from '@config/aduana-uy';
+import { describirCotizacion } from '@/modules/fx';
 import type { CompareResult } from '@/modules/compare';
 import { GuiaCompra, Perdidas } from './GuiaCompra';
 import { OptionRow } from './OptionRow';
@@ -76,9 +77,9 @@ export function Resultado({ result }: { result: CompareResult }) {
             aduanas.gub.uy
           </a>
         </p>
-        <p>
-          Cotización usada: 1 USD = {fx.usdToUyu} UYU ({fx.esFallback ? 'valor de respaldo' : fx.source},{' '}
-          {fx.fecha}).
+        <p className={fx.desactualizada ? 'text-warn-500' : undefined}>
+          {fx.desactualizada && '⚠ '}
+          Cotización usada: {describirCotizacion(fx)}
         </p>
         {veredicto.mejorOpcion?.costo.franquicia.consumeFranquicia &&
           veredicto.id === 'conviene-afuera' && (

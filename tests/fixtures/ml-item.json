@@ -1,0 +1,24 @@
+{
+  "id": "MLU123456789",
+  "title": "Apple iPhone 15 128 GB Negro",
+  "price": 42990,
+  "currency_id": "UYU",
+  "permalink": "https://articulo.mercadolibre.com.uy/MLU-123456789-apple-iphone-15-128-gb-negro-_JM",
+  "category_id": "MLU1055",
+  "condition": "new",
+  "seller_id": 123456,
+  "official_store_id": 42,
+  "warranty": "Garantía de fábrica: 12 meses",
+  "thumbnail": "https://http2.mlstatic.com/D_NQ_NP_thumb.jpg",
+  "pictures": [{ "secure_url": "https://http2.mlstatic.com/D_NQ_NP_1.jpg" }],
+  "shipping": { "free_shipping": true, "logistic_type": "fulfillment" },
+  "attributes": [
+    { "id": "BRAND", "name": "Marca", "value_name": "Apple" },
+    { "id": "MODEL", "name": "Modelo", "value_name": "iPhone 15" },
+    { "id": "GTIN", "name": "Código universal", "value_name": "195949036194" },
+    { "id": "INTERNAL_MEMORY", "name": "Memoria interna", "value_name": "128 GB" },
+    { "id": "COLOR", "name": "Color", "value_name": "Negro" },
+    { "id": "PACKAGE_WEIGHT", "name": "Peso del paquete", "value_name": "600 g" },
+    { "id": "ITEM_CONDITION", "name": "Condición", "value_name": "Nuevo" }
+  ]
+}

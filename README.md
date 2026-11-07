@@ -2,7 +2,7 @@
 
 Pegás el link de un producto de **Mercado Libre Uruguay** y la app te dice si conviene comprarlo acá o traerlo del exterior, con el **costo real puesto en Uruguay**: producto + envío + courier + impuestos según el régimen aduanero vigente.
 
-> **Estado: Fase 1 completa, normativa verificada.** La app corre entera con datos mock. El motor de impuestos, el parseo de links y el matcher determinístico son reales y están testeados, y **los parámetros aduaneros están cotejados contra el Decreto N° 50/026, la Ley 20.446 y las páginas de la Dirección Nacional de Aduanas**. Las integraciones con APIs externas (Mercado Libre, eBay, Claude) son las Fases 2 y 3.
+> **Estado: Fase 2 completa salvo credenciales.** La app corre entera con datos mock. El motor de impuestos, el parseo de links y el matcher determinístico son reales y están testeados, y **los parámetros aduaneros están cotejados contra el Decreto N° 50/026, la Ley 20.446 y las páginas de la Dirección Nacional de Aduanas**. El cliente de la API de Mercado Libre está escrito y testeado contra fixtures: le falta sólo que le pases las credenciales. La cotización del dólar ya sale de una fuente real. Quedan eBay y Claude, que son la Fase 3.
 
 ---
 
@@ -52,12 +52,12 @@ ml-reader → foreign-search → matcher → landed-cost → advisor
 
 | Módulo | Qué hace | Estado |
 |---|---|---|
-| `ml-reader` | Valida el link de ML y extrae el producto | Parseo real; datos mock (Fase 2: API de ML) |
+| `ml-reader` | Valida el link de ML y extrae el producto | **Cliente real con OAuth**; cae a mock sin credenciales |
 | `foreign-search` | Busca en tiendas del exterior | Provider mock (Fase 3: eBay) |
 | `matcher` | Decide si es **el mismo** producto | Capa determinística real (Fase 3: Claude) |
 | `landed-cost` | Costo puesto en Uruguay | **Completo y testeado** |
 | `advisor` | Veredicto + guía de compra | **Completo** |
-| `fx` | Cotización USD/UYU | Fallback (Fase 2: BCU) |
+| `fx` | Cotización USD/UYU | **Real** (dolarapi, con detección de dato viejo) |
 
 ```
 config/                  normativa y tarifas, versionadas
@@ -70,7 +70,7 @@ src/
   components/            UI
   lib/                   money, cache, logger, rate-limit, env
   modules/               la lógica de negocio
-tests/                   111 tests
+tests/                   148 tests
 ```
 
 ### Decisiones que conviene conocer antes de tocar el código
@@ -84,6 +84,30 @@ tests/                   111 tests
 **`landed-cost` siempre devuelve los dos regímenes**, cada uno con un flag `applicable`. No siempre son comparables: con un producto de USD 100 desde EE.UU. la franquicia paga USD 0 y el simplificado USD 60; con el cupo agotado la franquicia no existe. Decidir qué mostrar es tarea del `advisor`.
 
 **Cuando no sabemos algo, calculamos el escenario peor y lo decimos.** Si no podemos confirmar la residencia fiscal del vendedor, no aplicamos la exoneración de IVA y lo advertimos. Preferimos subestimar el ahorro antes que prometer uno que no se cumple.
+
+---
+
+## Credenciales de Mercado Libre
+
+Sin credenciales la app funciona con datos mock y la UI lo avisa. Para usar datos reales:
+
+1. Entrá a [developers.mercadolibre.com.uy](https://developers.mercadolibre.com.uy/devcenter) con tu cuenta de ML.
+2. Creá una aplicación. Te da un **App ID** y un **Secret Key**.
+3. Ponelos en `.env.local` como `ML_CLIENT_ID` y `ML_CLIENT_SECRET`.
+
+Es gratis. Usamos el grant `client_credentials`, que no necesita que ningún usuario autorice nada: alcanza con esas dos claves. El token dura 6 horas y se renueva solo.
+
+**El registro no es opcional.** Verificado el 2026-11-07: la API devuelve 403 (`PolicyAgent`) a cualquier llamada sin token, incluso a endpoints públicos como `/sites/MLU`. Las fuentes que dicen que las lecturas públicas todavía funcionan están desactualizadas.
+
+---
+
+## Cotización del dólar
+
+Se usa la cotización de **venta** de [uy.dolarapi.com](https://uy.dolarapi.com/v1/cotizaciones/usd) — pública, gratis, sin key. La venta y no la compra porque el usuario está por gastar dólares: tomar la compra inflaría el ahorro que le mostramos.
+
+El módulo calcula siempre la **antigüedad** del dato y la muestra. No es paranoia: en la verificación, dolarapi devolvió una cotización de siete semanas atrás sin ninguna señal de que estuviera vieja. Con más de 4 días, la UI lo advierte.
+
+El BCU sería la fuente oficial, pero su servidor rechaza con 403 las IPs de datacenter (`Oracle-iPlanet-Web-Server`, "Your client is not allowed to access the requested object"). Si desplegás donde el BCU sí acepte, prendé `FX_ENABLE_BCU=true` y pasa a ser la fuente primaria — falta implementar el cliente SOAP, que está documentado en `src/modules/fx/bcu.ts`.
 
 ---
 
@@ -176,7 +200,7 @@ No hace falta tocar nada más: la UI, el matcher y `landed-cost` lo toman solos.
 |---|---|---|
 | 1 | Config, `landed-cost` con tests, UI con mocks | ✅ Completa |
 | 1.5 | Normativa verificada contra fuente oficial · registro de vendedores de la DNA | ✅ Completa |
-| 2 | `ml-reader` contra la API de ML (OAuth) · `fx` contra el BCU | Pendiente |
+| 2 | `ml-reader` con OAuth · `fx` contra fuente real | ✅ Código completo; falta que cargues las credenciales de ML |
 | 3 | `foreign-search` con eBay · `matcher` con Claude | Pendiente |
 | 4 | Pulido de UI y deploy | Pendiente |
 

@@ -33,6 +33,14 @@ const schema = z.object({
 
   // --- Cotización ---
   FX_FALLBACK_USD_UYU: z.coerce.number().positive().default(40.5),
+  /**
+   * El BCU rechaza las IPs de datacenter con 403. Prendelo sólo si desplegás
+   * en una infraestructura cuya IP acepte. Ver src/modules/fx/bcu.ts.
+   */
+  FX_ENABLE_BCU: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
 
   // --- Rate limiting ---
   RATE_LIMIT_PER_HOUR: z.coerce.number().int().positive().default(20),

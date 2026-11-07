@@ -3,15 +3,16 @@
  * ==========
  * Recibe un link de Mercado Libre Uruguay y devuelve el producto normalizado.
  *
- * FASE 1 (actual): devuelve datos mock. El parseo y la validación de la URL
- * son reales y están testeados.
+ * Con credenciales configuradas pega contra la API oficial; sin ellas
+ * devuelve datos mock, así que la app corre entera sin configurar nada.
  *
- * FASE 2: `client.ts` contra la API oficial de ML (`GET /items/{id}`), con
- * OAuth. Ver README § "Fase 2". La doc de ML exige `Authorization: Bearer`,
- * así que hace falta registrar una app en developers.mercadolibre.com.uy.
+ * Verificado el 2026-11-07: la API rechaza con 403 toda llamada sin token,
+ * incluso a endpoints públicos. Hay que registrar una app en
+ * developers.mercadolibre.com.uy. Ver README § "Fase 2".
  */
 import { cached, defaultCache, TTL, type CacheStore } from '@/lib/cache';
-import { env } from '@/lib/env';
+import { hayCredenciales } from './auth';
+import { fetchProduct } from './client';
 import { getMockProduct } from './mock';
 import { parseMLUrl } from './parse-url';
 import type { MLProduct } from './types';
@@ -19,6 +20,8 @@ import type { MLProduct } from './types';
 export * from './types';
 export { parseMLUrl, isMLUrl } from './parse-url';
 export { MOCK_PRODUCTS } from './mock';
+export { hayCredenciales, resetTokenCache } from './auth';
+export { mapItem, mapCatalogProduct, mapAttributes, parseWeightToGrams } from './mapper';
 
 export interface MLReaderOptions {
   readonly cache?: CacheStore;
@@ -29,7 +32,7 @@ export interface MLReaderOptions {
 /** `true` si estamos sirviendo datos mock en lugar de la API real. */
 export function usandoMock(opts: MLReaderOptions = {}): boolean {
   if (opts.forceMock) return true;
-  return !env().ML_CLIENT_ID;
+  return !hayCredenciales();
 }
 
 export async function readMLProduct(
@@ -43,8 +46,6 @@ export async function readMLProduct(
     if (usandoMock(opts)) {
       return getMockProduct(parsed.itemId, parsed.canonicalUrl);
     }
-    // FASE 2: const { fetchItem } = await import('./client');
-    //         return fetchItem(parsed);
-    return getMockProduct(parsed.itemId, parsed.canonicalUrl);
+    return fetchProduct(parsed);
   });
 }
