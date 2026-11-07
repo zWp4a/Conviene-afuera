@@ -96,6 +96,9 @@ export async function compare(
         weightIsEstimated: peso.esEstimado,
         originCountry: offer.originCountry,
         ...(offer.merchantTaxCountry ? { merchantTaxCountry: offer.merchantTaxCountry } : {}),
+        // La razón social se coteja contra el registro de vendedores de
+        // Aduanas: es la prueba más confiable de la residencia fiscal.
+        ...(offer.merchantName ? { merchantName: offer.merchantName } : {}),
         courierId,
         ...(input.franquicia ? { franquicia: input.franquicia } : {}),
       });

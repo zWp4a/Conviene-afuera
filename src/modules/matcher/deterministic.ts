@@ -136,8 +136,8 @@ export function matchDeterministic(
 
   const señalComun = modeloComun ?? generacionComun;
   const etiquetaSeñal = modeloComun
-    ? `número de modelo (${modeloComun.toUpperCase()})`
-    : `marca y generación (${a.brand} ${generacionComun})`;
+    ? `el número de modelo (${modeloComun.toUpperCase()})`
+    : `la marca y la generación (${a.brand} ${generacionComun})`;
 
   if (señalComun) {
     // Si uno declara capacidad y el otro no, NUNCA es exacto: la variante
@@ -147,7 +147,7 @@ export function matchDeterministic(
       return {
         match: true,
         confidence: 0.8,
-        reason: `Mismo ${etiquetaSeñal}, pero sólo uno de los dos declara la capacidad: verificá la variante.`,
+        reason: `Coincide ${etiquetaSeñal}, pero sólo uno de los dos declara la capacidad: verificá la variante.`,
         method: 'model',
         tier: tierFor(0.8, true),
       };
@@ -157,7 +157,7 @@ export function matchDeterministic(
     return {
       match: true,
       confidence: conf,
-      reason: `Mismo ${etiquetaSeñal}${sa.capacidad ? ` y misma capacidad (${sa.capacidad.raw.trim()})` : ''}.`,
+      reason: `Coincide ${etiquetaSeñal}${sa.capacidad ? ` y la capacidad (${sa.capacidad.raw.trim()})` : ''}.`,
       method: 'model',
       tier: tierFor(conf, true),
     };

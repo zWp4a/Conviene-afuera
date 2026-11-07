@@ -4,6 +4,10 @@
  * Datos de ejemplo para desarrollar sin gastar API. Incluye a propósito casos
  * difíciles para el matcher: misma familia con otra capacidad, modelo de otro
  * año, y genéricos que se parecen al original.
+ *
+ * Las razones sociales son reales y salen del registro de vendedores de
+ * Aduanas (`config/vendedores-eeuu.ts`), para que el cálculo de la exoneración
+ * de IVA se ejercite de verdad y no contra un nombre inventado.
  */
 import { usd } from '@/lib/money';
 import type { ForeignOffer, ProductSearchProvider, SearchQuery } from '../types';
@@ -24,7 +28,7 @@ const CATALOGO: readonly ForeignOffer[] = [
     model: 'iPhone 15',
     condition: 'new',
     url: 'https://example.com/mock/iphone-15-128',
-    merchantName: 'MockStore US',
+    merchantName: 'APPLE INC.',
   },
   {
     // Trampa para el matcher: misma familia, otra capacidad.
@@ -41,7 +45,7 @@ const CATALOGO: readonly ForeignOffer[] = [
     model: 'iPhone 15',
     condition: 'new',
     url: 'https://example.com/mock/iphone-15-256',
-    merchantName: 'MockStore US',
+    merchantName: 'APPLE INC.',
   },
   {
     // Trampa: modelo de otro año.
@@ -57,7 +61,7 @@ const CATALOGO: readonly ForeignOffer[] = [
     model: 'iPhone 14',
     condition: 'new',
     url: 'https://example.com/mock/iphone-14-128',
-    merchantName: 'MockStore US',
+    merchantName: 'APPLE INC.',
   },
   // --- Sony WH-1000XM5 ---
   {
@@ -74,7 +78,7 @@ const CATALOGO: readonly ForeignOffer[] = [
     model: 'WH-1000XM5',
     condition: 'new',
     url: 'https://example.com/mock/sony-xm5',
-    merchantName: 'MockStore US',
+    merchantName: 'B & H FOTO & ELECTRONICS CORP.',
   },
   {
     // Trampa: generación anterior.
@@ -90,7 +94,7 @@ const CATALOGO: readonly ForeignOffer[] = [
     model: 'WH-1000XM4',
     condition: 'new',
     url: 'https://example.com/mock/sony-xm4',
-    merchantName: 'MockStore US',
+    merchantName: 'B & H FOTO & ELECTRONICS CORP.',
   },
   {
     // Trampa: genérico que imita. Origen CN ⇒ sin exención de IVA.
@@ -104,7 +108,7 @@ const CATALOGO: readonly ForeignOffer[] = [
     brand: 'Generic',
     condition: 'new',
     url: 'https://example.com/mock/generic-anc',
-    merchantName: 'MockStore CN',
+    merchantName: 'SHENZHEN GENERIC AUDIO CO',
   },
   // --- Kindle: caso con valor alto, para probar el cupo ---
   {
@@ -120,7 +124,7 @@ const CATALOGO: readonly ForeignOffer[] = [
     model: 'Kindle Paperwhite 11th Gen',
     condition: 'new',
     url: 'https://example.com/mock/kindle-pw-16',
-    merchantName: 'MockStore US',
+    merchantName: 'AMAZON.COM, INC.',
   },
   {
     // Caso de valor alto, para probar el tope de USD 800 del simplificado.
@@ -136,7 +140,7 @@ const CATALOGO: readonly ForeignOffer[] = [
     model: 'MacBook Air 13 M3',
     condition: 'new',
     url: 'https://example.com/mock/macbook-air-m3',
-    merchantName: 'MockStore US',
+    merchantName: 'APPLE INC.',
   },
 ];
 

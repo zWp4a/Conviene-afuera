@@ -2,7 +2,7 @@
 
 Pegás el link de un producto de **Mercado Libre Uruguay** y la app te dice si conviene comprarlo acá o traerlo del exterior, con el **costo real puesto en Uruguay**: producto + envío + courier + impuestos según el régimen aduanero vigente.
 
-> **Estado: Fase 1 completa.** La app corre entera con datos mock. El motor de impuestos, el parseo de links y el matcher determinístico son reales y están testeados. Las integraciones con APIs externas (Mercado Libre, eBay, Claude) son las Fases 2 y 3.
+> **Estado: Fase 1 completa, normativa verificada.** La app corre entera con datos mock. El motor de impuestos, el parseo de links y el matcher determinístico son reales y están testeados, y **los parámetros aduaneros están cotejados contra el Decreto N° 50/026, la Ley 20.446 y las páginas de la Dirección Nacional de Aduanas**. Las integraciones con APIs externas (Mercado Libre, eBay, Claude) son las Fases 2 y 3.
 
 ---
 
@@ -64,12 +64,13 @@ config/                  normativa y tarifas, versionadas
   aduana-uy.ts           ← única fuente de verdad de las reglas aduaneras
   couriers-uy.ts         ← tarifas de courier
   categorias-peso.ts     ← pesos estimados por categoría
+  vendedores-eeuu.ts     ← registro de vendedores de EE.UU. de la DNA
 src/
   app/                   páginas, server action y /api/compare
   components/            UI
   lib/                   money, cache, logger, rate-limit, env
   modules/               la lógica de negocio
-tests/                   101 tests
+tests/                   111 tests
 ```
 
 ### Decisiones que conviene conocer antes de tocar el código
@@ -82,7 +83,7 @@ tests/                   101 tests
 
 **`landed-cost` siempre devuelve los dos regímenes**, cada uno con un flag `applicable`. No siempre son comparables: con un producto de USD 100 desde EE.UU. la franquicia paga USD 0 y el simplificado USD 60; con el cupo agotado la franquicia no existe. Decidir qué mostrar es tarea del `advisor`.
 
-**Cuando no sabemos algo, calculamos el escenario peor y lo decimos.** Si no podemos confirmar que el comercio tiene sede fiscal en EE.UU., no aplicamos la exención de IVA y lo advertimos. Preferimos subestimar el ahorro antes que prometer uno que no se cumple.
+**Cuando no sabemos algo, calculamos el escenario peor y lo decimos.** Si no podemos confirmar la residencia fiscal del vendedor, no aplicamos la exoneración de IVA y lo advertimos. Preferimos subestimar el ahorro antes que prometer uno que no se cumple.
 
 ---
 
@@ -98,18 +99,31 @@ Toda la normativa está en **`config/aduana-uy.ts`** y en ningún otro lado. Par
 6. Cuando no quede nada pendiente, poné `verificadoContraFuenteOficial: true`. Eso apaga el cartel de advertencia en la UI.
 7. Corré `npm test`: si un cambio de parámetro rompe un test, el test te dice qué caso cambió.
 
-### ⚠️ Pendientes de verificación
+### Estado: verificado el 2026-11-07
 
-Los valores actuales salieron de guías comerciales y prensa que coinciden entre sí, **no del texto oficial del decreto**. Falta confirmar:
+Los parámetros fueron cotejados contra el [Decreto N° 50/026](https://www.impo.com.uy/bases/decretos/50-2026) (promulgado 12/03/2026), los [artículos 627-635 de la Ley N° 20.446](https://www.impo.com.uy/bases/leyes/20446-2025/627) y las páginas oficiales de la DNA sobre [franquicia](https://www.aduanas.gub.uy/innovaportal/v/28221/1/innova.front/) y [prestación única](https://www.aduanas.gub.uy/innovaportal/v/28222/1/innova.front/). `PENDIENTES` está vacío y `verificadoContraFuenteOficial` es `true`.
 
-- **Mínimo de USD 20 de IVA** por envío gravado en franquicia.
-- **Tope de 20 kg** por envío en el régimen simplificado.
-- Si la exención de hasta USD 200 exige **sede fiscal del comercio en EE.UU.** (acuerdo TIFA) o alcanza con el origen físico del envío.
-- Si las compras anteriores al 1/5/2026 **cuentan contra el cupo** de 2026.
-- Una fuente menciona un **cambio normativo con fecha 1/10/2026** sin detallar su contenido. Si existió, ya está vigente y no está reflejado.
-- Si la **base imponible** incluye el flete internacional. Se asumió que no (el supuesto más favorable al usuario).
+La verificación corrigió cinco cosas respecto de lo que dicen las guías de couriers:
+
+| Lo que dicen las guías | Lo que dice la norma |
+|---|---|
+| Mínimo de USD 20 de IVA en franquicia | **No existe.** El mínimo de USD 20 es sólo del régimen de prestación única (Ley 20.446 art. 627, Decreto art. 2) |
+| Tope de 20 kg sólo en el simplificado | Aplica a **todo** el régimen de envíos postales (Decreto art. 1), franquicia incluida |
+| La base es el valor del producto | Es el **total de la factura**, incluidos todos los conceptos adicionados en ella (art. 5): el envío que cobra la tienda entra, el courier uruguayo no |
+| La exención de EE.UU. es por origen del envío | Exige **residencia fiscal del vendedor**, acreditada con la factura (art. 3). Y el envío exonerado **consume cupo igual** |
+| "Cambio normativo el 1/10/2026" | No existe. Lo real es el **1/2/2027**: desde esa fecha el vendedor de EE.UU. debe estar registrado ante la DNA |
+
+Además, el régimen tiene requisitos que las guías no mencionan y que están modelados en `requisitosFranquicia`: registro previo ante la DNA por única vez, pago con tarjeta internacional, y titularidad coincidente entre tarjeta, comprador y destinatario.
 
 ---
+
+## Cómo actualizar el listado de vendedores
+
+`config/vendedores-eeuu.ts` tiene las 149 razones sociales que Aduanas publica como vendedores de EE.UU. registrados (listado del 04/11/2026). Desde el 1/2/2027 ese registro es obligatorio para la exoneración de IVA, y mientras tanto lo usamos como la prueba más confiable de residencia fiscal.
+
+Para actualizarlo: bajá el [PDF de Aduanas](https://www.aduanas.gub.uy/innovaportal/file/28873/1/control.empresas.pdf), extraé las razones sociales, reemplazá el array `VENDEDORES_REGISTRADOS` y actualizá `LISTADO_FECHA`.
+
+La comparación ignora sufijos ("Inc.", "LLC") y puntuación, pero **no hace coincidencias parciales**: un falso positivo acá significa prometerle al usuario una exoneración que después no le dan.
 
 ## Cómo actualizar las tarifas de courier
 
@@ -161,6 +175,7 @@ No hace falta tocar nada más: la UI, el matcher y `landed-cost` lo toman solos.
 | Fase | Qué incluye | Estado |
 |---|---|---|
 | 1 | Config, `landed-cost` con tests, UI con mocks | ✅ Completa |
+| 1.5 | Normativa verificada contra fuente oficial · registro de vendedores de la DNA | ✅ Completa |
 | 2 | `ml-reader` contra la API de ML (OAuth) · `fx` contra el BCU | Pendiente |
 | 3 | `foreign-search` con eBay · `matcher` con Claude | Pendiente |
 | 4 | Pulido de UI y deploy | Pendiente |

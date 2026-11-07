@@ -6,7 +6,7 @@
  *
  * Tono: español rioplatense, claro y directo. Nada de "podría considerar".
  */
-import { ADUANA_UY, DISCLAIMER } from '@config/aduana-uy';
+import { ADUANA_UY, DISCLAIMER, TRANSICION_2026 } from '@config/aduana-uy';
 import { getCourier } from '@config/couriers-uy';
 import { format, savingsPct, sub, type Money } from '@/lib/money';
 import { usdToUyu, type Cotizacion } from '@/modules/fx';
@@ -138,7 +138,19 @@ export function construirGuia(opcion: OpcionExterior): readonly PasoGuia[] {
     ) ?? 'generico',
   );
 
-  const pasos: PasoGuia[] = [
+  const pasos: PasoGuia[] = [];
+
+  // El registro ante Aduanas es un requisito del Decreto 50/026 art. 4, y es
+  // por única vez: va primero porque sin eso no podés usar la franquicia.
+  if (breakdown.regime === 'franquicia') {
+    pasos.push({
+      titulo: 'Registrate una vez ante Aduanas',
+      detalle:
+        'Antes de usar la franquicia tenés que registrarte por única vez ante la Dirección Nacional de Aduanas, con tu cédula y el control de identidad digital. Se hace una sola vez y queda para todas tus compras.',
+    });
+  }
+
+  pasos.push(
     {
       titulo: `Abrí una cuenta en ${courier}`,
       detalle: courierCfg.sitioWeb
@@ -147,9 +159,13 @@ export function construirGuia(opcion: OpcionExterior): readonly PasoGuia[] {
     },
     {
       titulo: 'Comprá en la tienda con la dirección de Miami',
-      detalle: `Comprá en ${opcion.offer.merchantName ?? 'la tienda'} y poné la dirección de Miami que te dio el courier como dirección de envío. El producto sale ${format(opcion.offer.price)}.`,
+      detalle: `Comprá en ${opcion.offer.merchantName ?? 'la tienda'} y poné la dirección de Miami que te dio el courier como dirección de envío. El producto sale ${format(opcion.offer.price)}.${
+        breakdown.regime === 'franquicia'
+          ? ' Importante: pagá con tarjeta de crédito o débito internacional a TU nombre. Si el titular de la tarjeta no coincide con el destinatario del envío, perdés la franquicia.'
+          : ''
+      }`,
     },
-  ];
+  );
 
   if (breakdown.regime === 'franquicia') {
     const consume = breakdown.consumeFranquicia;
@@ -157,7 +173,7 @@ export function construirGuia(opcion: OpcionExterior): readonly PasoGuia[] {
       titulo: 'Declarala como franquicia',
       detalle: `Cuando el courier te pida declarar el envío, elegí el régimen de franquicia. ${
         breakdown.taxUsd.cents === 0
-          ? 'Esta compra queda exenta de IVA.'
+          ? 'Esta compra queda exenta de IVA, pero te consume cupo igual.'
           : `Vas a pagar ${format(breakdown.taxUsd)} de IVA.`
       }${
         consume
@@ -218,7 +234,10 @@ export function perdidasAlComprarAfuera(
 
   if (opcion.costo.recomendado?.regime === 'franquicia') {
     out.push(
-      `Cupo: te consume 1 de los ${ADUANA_UY.franquicia.enviosPorAnioCalendario} envíos de franquicia del año, que no podés usar para otra compra.`,
+      `Cupo: te consume 1 de los ${ADUANA_UY.franquicia.enviosPorAnioCalendario} envíos de franquicia del año, que no podés usar para otra compra. ${TRANSICION_2026}`,
+    );
+    out.push(
+      'Forma de pago: la franquicia te obliga a pagar con tarjeta internacional a tu nombre. No podés usar la tarjeta de otra persona ni métodos que Aduanas no pueda verificar.',
     );
   }
 

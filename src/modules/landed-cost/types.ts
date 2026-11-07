@@ -7,7 +7,8 @@ export type WarningCode =
   | 'PESO_ESTIMADO'
   | 'TARIFA_COURIER_SIN_VERIFICAR'
   | 'NORMATIVA_SIN_VERIFICAR'
-  | 'SEDE_FISCAL_DESCONOCIDA'
+  | 'RESIDENCIA_FISCAL_DESCONOCIDA'
+  | 'VENDEDOR_NO_REGISTRADO'
   | 'COTIZACION_FALLBACK'
   | 'ENVIO_DOMESTICO_DESCONOCIDO';
 
@@ -53,8 +54,10 @@ export interface LandedCostInput {
   readonly weightIsEstimated: boolean;
   /** País desde donde sale el paquete (ISO alpha-2). */
   readonly originCountry: string;
-  /** País de sede fiscal del comercio. Define la exención de IVA. */
+  /** País de residencia fiscal del vendedor. Define la exoneración de IVA. */
   readonly merchantTaxCountry?: string;
+  /** Razón social del comercio, para cotejar contra el registro de Aduanas. */
+  readonly merchantName?: string;
   readonly courierId: CourierId;
   readonly franquicia?: EstadoFranquicia;
 }
@@ -68,11 +71,13 @@ export interface LandedCostBreakdown {
 
   readonly productUsd: Money;
   readonly domesticShippingUsd: Money;
+  /** Base imponible: producto + envío que cobra la tienda (factura). */
+  readonly valorFacturaUsd: Money;
   readonly courierUsd: Money;
   readonly taxUsd: Money;
   readonly totalUsd: Money;
 
-  /** Tasa efectiva de impuesto sobre el valor del producto, en %. */
+  /** Tasa efectiva de impuesto sobre el valor de factura, en %. */
   readonly tasaEfectivaPct: number;
   /** Explicación del impuesto en una línea, para mostrar en la UI. */
   readonly explicacionImpuesto: string;

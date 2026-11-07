@@ -3,153 +3,206 @@
  * =====================================================
  *
  * Este archivo concentra TODA la normativa que usa el módulo `landed-cost`.
- * Si cambian las reglas, se cambia acá y en ningún otro lugar.
+ * Si cambian las reglas, se cambia acá y en ningún otro lado.
  *
  * Cómo actualizarlo: ver README.md § "Cómo actualizar la normativa".
  *
- * ⚠️  ESTADO DE VERIFICACIÓN: NO VERIFICADO CONTRA FUENTE OFICIAL.
- *     Los valores de abajo se tomaron de guías comerciales (couriers, medios,
- *     casas de cambio) que coinciden entre sí, pero NO del texto del
- *     Decreto 50/2026 ni de aduanas.gub.uy. Ver `FUENTES` y `PENDIENTES`.
+ * ✅ ESTADO: VERIFICADO CONTRA FUENTE OFICIAL el 2026-11-07.
+ *    Cotejado contra el texto del Decreto N° 50/026 en IMPO, los artículos
+ *    627 a 635 de la Ley N° 20.446, y las páginas de la Dirección Nacional
+ *    de Aduanas sobre cada régimen. Ver `FUENTES`.
  */
 
 export type RegimenId = 'franquicia' | 'simplificado';
 
-/** Sobre qué monto se calcula el impuesto. */
-export type BaseImponible = 'producto' | 'producto+envio';
+/**
+ * Qué integra la base imponible.
+ *
+ * `factura`: el total de la factura original de compra, incluidos todos los
+ * conceptos adicionados en ella (Decreto 50/026 art. 5). Es decir: producto
+ * MÁS el envío que cobra la tienda del exterior, si figura en la factura.
+ * NO incluye lo que cobra el courier en Uruguay, que no está en esa factura.
+ */
+export type BaseImponible = 'factura';
 
 export interface NormativaAduanaUy {
   /** Fecha desde la cual rige este conjunto de reglas (ISO 8601). */
   readonly vigenciaDesde: string;
-  /** Norma que la establece. */
   readonly norma: string;
-  /** `true` sólo cuando alguien cotejó estos valores con la fuente oficial. */
+  readonly normaUrl: string;
+  /** Ley que el decreto reglamenta. */
+  readonly leyHabilitante: string;
   readonly verificadoContraFuenteOficial: boolean;
-  /** Fecha de la última revisión de este archivo. */
   readonly revisadoEl: string;
 
+  /**
+   * Peso máximo por envío, en kg. Aplica a TODO el régimen de envíos
+   * postales internacionales, no sólo al simplificado: el Decreto 50/026
+   * art. 1 define su propio alcance como los envíos "cuyo peso unitario no
+   * exceda de 20 (veinte) kilogramos".
+   */
+  readonly topePesoPorEnvioKg: number;
+
   readonly franquicia: {
-    /** Cantidad máxima de envíos amparados por franquicia, por año calendario. */
     readonly enviosPorAnioCalendario: number;
     /**
-     * Cupo acumulado anual en valor de producto (USD). No se acumula entre
-     * años: se resetea el 1 de enero.
+     * Cupo acumulado anual en valor de factura (USD). No se acumula entre
+     * años. Importante: los envíos exonerados de IVA TAMBIÉN consumen cupo
+     * (Decreto 50/026 art. 3: "el valor de dichos envíos se imputará al cupo
+     * anual establecido para la franquicia").
      */
     readonly cupoAnualUsd: number;
-    /** Tasa de IVA aplicable a las compras en franquicia. */
     readonly ivaTasa: number;
-    /**
-     * Mínimo de IVA a pagar por envío gravado (USD).
-     * ⚠️ Ver PENDIENTES.minimoIva — valor no confirmado oficialmente.
-     */
-    readonly ivaMinimoUsd: number;
-    /** Qué monto integra la base imponible del IVA. */
     readonly baseImponible: BaseImponible;
     /**
-     * Exención de IVA para compras en comercios con sede fiscal en EE.UU.
-     * (acuerdo marco TIFA).
+     * Exoneración de IVA por acuerdo comercial internacional.
+     * Hoy el único país con acuerdo vigente en la materia es EE.UU.
      */
-    readonly exencionEstadosUnidos: {
+    readonly exoneracionPorAcuerdo: {
+      readonly paises: readonly string[];
       readonly topePorEnvioUsd: number;
       /**
-       * Si es `true`, no alcanza con que el paquete salga físicamente de
-       * EE.UU.: el comercio vendedor debe tener sede fiscal allí.
+       * No alcanza con que el paquete salga físicamente del país: el envío
+       * debe estar "embarcado por el vendedor residente fiscal" allí, y la
+       * residencia se acredita con la factura.
        */
-      readonly requiereSedeFiscalEnEeuu: boolean;
+      readonly requiereResidenciaFiscalDelVendedor: true;
+      /**
+       * Desde esta fecha, además, el emisor de la factura debe estar
+       * registrado ante la Dirección Nacional de Aduanas.
+       * Ver `config/vendedores-eeuu.ts`.
+       */
+      readonly exigeVendedorRegistradoDesde: string;
     };
-    /** El IVA pagado NO consume cupo de los USD 800. */
+    /** Los libros y medicamentos de uso personal no computan contra el cupo. */
+    readonly exceptuadosDelCupo: readonly string[];
+    /** El IVA pagado no se imputa al cupo: sólo el valor de factura. */
     readonly ivaConsumeCupo: false;
+    /**
+     * El régimen de franquicia NO tiene un pago mínimo. El mínimo de USD 20
+     * pertenece exclusivamente al régimen de prestación única (ver abajo).
+     */
+    readonly pagoMinimoUsd: null;
   };
 
   readonly simplificado: {
-    /** Tasa única sobre el valor del envío. */
     readonly tasa: number;
-    /** Mínimo a pagar por envío (USD). */
+    /** Pago mínimo por envío (Ley 20.446 art. 627 y Decreto 50/026 art. 2). */
     readonly minimoUsd: number;
-    /** Valor máximo de mercadería por envío (USD). */
     readonly topeValorPorEnvioUsd: number;
-    /**
-     * Peso máximo por envío (kg).
-     * ⚠️ Ver PENDIENTES.topePeso — valor no confirmado oficialmente.
-     */
-    readonly topePesoPorEnvioKg: number;
     /** Sin límite de cantidad de envíos por año. */
     readonly enviosPorAnioCalendario: null;
     readonly baseImponible: BaseImponible;
+    /** A diferencia de la franquicia, lo pueden usar personas jurídicas. */
+    readonly admitePersonasJuridicas: true;
+    readonly admiteFinesComerciales: true;
   };
 
-  readonly requisitos: readonly string[];
+  /** Requisitos del régimen de franquicia (Decreto 50/026 art. 4). */
+  readonly requisitosFranquicia: readonly string[];
+  /** Mercadería excluida de los dos regímenes (Decreto 50/026 art. 7). */
+  readonly exclusiones: readonly string[];
 }
 
 export const ADUANA_UY: NormativaAduanaUy = {
   vigenciaDesde: '2026-05-01',
-  norma: 'Decreto 50/2026 (régimen de envíos postales y courier)',
-  verificadoContraFuenteOficial: false,
+  norma: 'Decreto N° 50/026 de 12/03/2026',
+  normaUrl: 'https://www.impo.com.uy/bases/decretos/50-2026',
+  leyHabilitante: 'Ley N° 20.446 de 16/12/2025, artículos 627 a 635',
+  verificadoContraFuenteOficial: true,
   revisadoEl: '2026-11-07',
+
+  topePesoPorEnvioKg: 20,
 
   franquicia: {
     enviosPorAnioCalendario: 3,
     cupoAnualUsd: 800,
     ivaTasa: 0.22,
-    ivaMinimoUsd: 20,
-    baseImponible: 'producto',
-    exencionEstadosUnidos: {
+    baseImponible: 'factura',
+    exoneracionPorAcuerdo: {
+      paises: ['US'],
       topePorEnvioUsd: 200,
-      requiereSedeFiscalEnEeuu: true,
+      requiereResidenciaFiscalDelVendedor: true,
+      exigeVendedorRegistradoDesde: '2027-02-01',
     },
+    exceptuadosDelCupo: ['libros', 'medicamentos de uso personal (con autorización del MSP)'],
     ivaConsumeCupo: false,
+    pagoMinimoUsd: null,
   },
 
   simplificado: {
     tasa: 0.6,
     minimoUsd: 20,
     topeValorPorEnvioUsd: 800,
-    topePesoPorEnvioKg: 20,
     enviosPorAnioCalendario: null,
-    baseImponible: 'producto',
+    baseImponible: 'factura',
+    admitePersonasJuridicas: true,
+    admiteFinesComerciales: true,
   },
 
-  requisitos: [
-    'Ser mayor de 18 años.',
-    'Tener cédula de identidad uruguaya.',
-    'La compra debe ser para uso personal, no comercial.',
+  requisitosFranquicia: [
+    'Registrarte por única vez ante la Dirección Nacional de Aduanas antes de usar la franquicia.',
+    'Ser persona física mayor de edad con documento de identidad uruguayo.',
+    'Que la compra sea para uso personal y sin fines comerciales.',
+    'Pagar con tarjeta de crédito o débito internacional, o dinero electrónico internacional, emitidos por una institución regulada por el BCU.',
+    'Que el titular del medio de pago, el titular de la compra y el destinatario del envío sean la misma persona.',
+    'Autorizar a la administradora de la tarjeta a confirmarle a Aduanas que la titularidad coincide.',
+    'Cumplir con el control de identidad digital de Aduanas.',
+  ],
+
+  exclusiones: [
+    'Mercadería gravada por el IMESI.',
+    'Mercadería que requiera autorización de otro organismo y no la tenga.',
   ],
 } as const;
 
-/**
- * Fuentes consultadas el 2026-11-07. Ninguna es oficial: todas son guías
- * comerciales o periodísticas que coinciden entre sí.
- */
-export const FUENTES: readonly { nombre: string; url: string; tipo: 'comercial' | 'prensa' | 'oficial' }[] = [
-  { nombre: 'Gripper — Régimen de encomiendas 2026', url: 'https://www.gripper.com.uy/regimen-de-encomiendas', tipo: 'comercial' },
-  { nombre: 'Tiendamia — Franquicias Uruguay 2026', url: 'https://tiendamia.com.uy/franquicias-uruguay-2026', tipo: 'comercial' },
-  { nombre: 'Telenoche — Compras online: qué cambia desde mayo', url: 'https://www.telenoche.com.uy/nacionales/compras-online-que-cambia-mayo-las-franquicias-y-el-nuevo-tope-us-800-n5397085', tipo: 'prensa' },
-  { nombre: 'Compras por Internet UY — Claves 2026', url: 'https://comprasporinternet.uy/instructivos/compras-exterior-desde-uruguay-claves/', tipo: 'comercial' },
+/** Fuentes consultadas y cotejadas el 2026-11-07. */
+export const FUENTES: readonly { nombre: string; url: string; tipo: 'oficial' | 'comercial' | 'prensa' }[] = [
+  {
+    nombre: 'Decreto N° 50/026 — texto actualizado (IMPO)',
+    url: 'https://www.impo.com.uy/bases/decretos/50-2026',
+    tipo: 'oficial',
+  },
+  {
+    nombre: 'Ley N° 20.446 art. 627 (IMPO)',
+    url: 'https://www.impo.com.uy/bases/leyes/20446-2025/627',
+    tipo: 'oficial',
+  },
+  {
+    nombre: 'DNA — Régimen de franquicia',
+    url: 'https://www.aduanas.gub.uy/innovaportal/v/28221/1/innova.front/',
+    tipo: 'oficial',
+  },
+  {
+    nombre: 'DNA — Régimen con prestación única (60%)',
+    url: 'https://www.aduanas.gub.uy/innovaportal/v/28222/1/innova.front/',
+    tipo: 'oficial',
+  },
+  {
+    nombre: 'DNA — Envíos postales internacionales',
+    url: 'https://www.aduanas.gub.uy/innovaportal/v/28219/1/innova.front/encomiendas-postales-internacionales.html',
+    tipo: 'oficial',
+  },
 ] as const;
 
-/** Fuente oficial a cotejar. */
-export const FUENTE_OFICIAL_URL = 'https://www.aduanas.gub.uy/';
+export const FUENTE_OFICIAL_URL =
+  'https://www.aduanas.gub.uy/innovaportal/v/28219/1/innova.front/encomiendas-postales-internacionales.html';
 
 /**
- * Puntos que hay que confirmar contra MEF / Dirección Nacional de Aduanas
- * antes de considerar este archivo confiable. Cada uno se muestra como
- * advertencia en la UI mientras `verificadoContraFuenteOficial` sea `false`.
+ * Puntos que siguen sin resolverse. Cuando este objeto está vacío y
+ * `verificadoContraFuenteOficial` es `true`, la UI no muestra advertencia
+ * sobre la normativa.
  */
-export const PENDIENTES = {
-  minimoIva:
-    'Mínimo de USD 20 de IVA por envío gravado en franquicia: aparece en guías de couriers, no confirmado en el decreto.',
-  topePeso:
-    'Tope de 20 kg por envío en el régimen simplificado: aparece en guías de couriers, no confirmado en el decreto.',
-  sedeFiscalEeuu:
-    'La exención de hasta USD 200 exigiría sede fiscal del comercio en EE.UU. (TIFA), no sólo origen físico del envío. Confirmar el criterio exacto.',
-  arrastre2026:
-    'Las compras hechas antes del 2026-05-01 contarían contra el cupo de USD 800 del año 2026. Confirmar.',
-  cambioOctubre2026:
-    'Una fuente menciona un cambio normativo con fecha 2026-10-01 sin detallar su contenido. Si existió, YA ESTÁ VIGENTE y no está reflejado acá.',
-  baseImponible:
-    'Si la base imponible del IVA y de la tasa del 60% es sólo el valor del producto o incluye el flete internacional. Se asumió sólo producto (el supuesto más favorable al usuario).',
-} as const;
+export const PENDIENTES: Readonly<Record<string, string>> = {};
 
-/** Texto legal fijo que se muestra en toda pantalla de resultado. */
+/**
+ * Transición 2026 (Decreto 50/026 art. 18): durante 2026 conviven el régimen
+ * anterior (Decreto 356/014, hasta el 30/04) y el nuevo. Para contar el tope
+ * de USD 800 y la cantidad de envíos se toman TODOS los del año civil, con
+ * cualquiera de los dos regímenes.
+ */
+export const TRANSICION_2026 =
+  'Durante 2026, para contar tus 3 envíos y tus USD 800 se suman también las compras que hiciste antes del 1 de mayo, con el régimen anterior.';
+
 export const DISCLAIMER =
   'Estimación orientativa, no es asesoramiento aduanero. Verificá en aduanas.gub.uy.';
