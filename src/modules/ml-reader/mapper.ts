@@ -124,6 +124,7 @@ export function mapItem(raw: MLItemRaw, fallbackUrl: string): MLProduct {
     images,
     ...(raw.warranty ? { warrantyText: raw.warranty } : {}),
     source: 'api',
+    priceSource: 'catalogo',
   };
 }
 
@@ -150,6 +151,7 @@ export function mapCatalogProduct(raw: MLProductRaw, fallbackUrl: string): MLPro
     images,
     ...(bb?.warranty ? { warrantyText: bb.warranty } : {}),
     source: 'api',
+    priceSource: 'catalogo',
   };
 }
 
@@ -180,6 +182,7 @@ export function mapCatalog(
   product: CatalogProduct,
   listings: readonly CatalogListing[],
   url: string,
+  precioManual?: Money,
 ): MLProduct {
   const attrs = product.attributes ?? [];
   const mejor = listingMasBarata(listings);
@@ -193,7 +196,7 @@ export function mapCatalog(
     id: product.id,
     url: product.permalink || url,
     title: product.name,
-    price: fromUnits(mejor?.price ?? 0, mapCurrency(mejor?.currency_id)),
+    price: precioManual ?? fromUnits(mejor?.price ?? 0, mapCurrency(mejor?.currency_id)),
     attributes: mapAttributes(attrs),
     ...(weightGrams ? { weightGrams } : {}),
     categoryId: mejor?.category_id ?? '',
@@ -209,5 +212,6 @@ export function mapCatalog(
     images,
     ...(mejor?.warranty ? { warrantyText: mejor.warranty } : {}),
     source: 'api',
+    priceSource: precioManual ? 'usuario' : 'catalogo',
   };
 }

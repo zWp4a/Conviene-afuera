@@ -11,6 +11,7 @@
  * developers.mercadolibre.com.uy. Ver README § "Fase 2".
  */
 import { cached, defaultCache, TTL, type CacheStore } from '@/lib/cache';
+import type { Money } from '@/lib/money';
 import { hayCredenciales } from './auth';
 import { fetchProduct } from './client';
 import { getMockProduct } from './mock';
@@ -25,6 +26,11 @@ export { mapItem, mapCatalogProduct, mapAttributes, parseWeightToGrams } from '.
 
 export interface MLReaderOptions {
   readonly cache?: CacheStore;
+  /**
+   * Precio que escribió la persona mirando la pantalla de Mercado Libre.
+   * Ver `PRECIO_NO_DISPONIBLE` en types.ts para por qué hace falta.
+   */
+  readonly precioManual?: Money;
   /** Fuerza el uso de mocks aunque haya credenciales (para tests y demos). */
   readonly forceMock?: boolean;
 }
@@ -42,10 +48,14 @@ export async function readMLProduct(
   const parsed = parseMLUrl(url);
   const store = opts.cache ?? defaultCache;
 
-  return cached(store, `ml:${parsed.itemId}`, TTL.BUSQUEDA_MS, async () => {
+  // El precio manual forma parte de la clave: si la persona corrige el
+  // precio, no queremos devolverle el resultado viejo cacheado.
+  const key = `ml:${parsed.itemId}:${opts.precioManual?.cents ?? ''}${opts.precioManual?.currency ?? ''}`;
+
+  return cached(store, key, TTL.BUSQUEDA_MS, async () => {
     if (usandoMock(opts)) {
       return getMockProduct(parsed.itemId, parsed.canonicalUrl);
     }
-    return fetchProduct(parsed);
+    return fetchProduct(parsed, opts.precioManual);
   });
 }

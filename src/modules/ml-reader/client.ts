@@ -16,6 +16,7 @@
  * producto correcto de una lista de resultados ES un problema de matching, y
  * porque la parte que usamos es pura — sin red, sin LLM y sin costo.
  */
+import type { Money } from '@/lib/money';
 import { matchDeterministic, tokenSimilarity } from '@/modules/matcher';
 import { fetchCatalogListings, fetchCatalogProduct, searchCatalog, type CatalogSearchResult } from './catalog';
 import { mapAttributes, mapCatalog } from './mapper';
@@ -84,12 +85,16 @@ export function rankearCatalogo(
     }));
 }
 
-async function desdeProductId(productId: string, url: string): Promise<MLProduct> {
+async function desdeProductId(
+  productId: string,
+  url: string,
+  precioManual?: Money,
+): Promise<MLProduct> {
   const [product, listings] = await Promise.all([
     fetchCatalogProduct(productId),
     fetchCatalogListings(productId),
   ]);
-  return mapCatalog(product, listings, url);
+  return mapCatalog(product, listings, url, precioManual);
 }
 
 /** `true` si el producto tiene un precio real con el que se pueda comparar. */
@@ -100,11 +105,14 @@ function tienePrecio(p: MLProduct): boolean {
 /** Cuántos candidatos probamos antes de rendirnos. Cada uno son 2 requests. */
 const MAX_CANDIDATOS = 3;
 
-export async function fetchProduct(parsed: ParsedMLUrl): Promise<MLProduct> {
+export async function fetchProduct(
+  parsed: ParsedMLUrl,
+  precioManual?: Money,
+): Promise<MLProduct> {
   const { itemId, canonicalUrl, esCatalogo, tituloDelSlug } = parsed;
 
   // Caso fácil: el link ya trae el id del catálogo.
-  if (esCatalogo) return desdeProductId(itemId, canonicalUrl);
+  if (esCatalogo) return desdeProductId(itemId, canonicalUrl, precioManual);
 
   // Caso de publicación: el id no nos sirve, el título del slug sí.
   if (!tituloDelSlug) {
@@ -130,19 +138,21 @@ export async function fetchProduct(parsed: ParsedMLUrl): Promise<MLProduct> {
     );
   }
 
+  // Si la persona ya nos dio el precio, no hace falta buscar uno que sirva:
+  // con el primer candidato bien matcheado alcanza.
+  if (precioManual) {
+    return desdeProductId(candidatos[0]!.productId, canonicalUrl, precioManual);
+  }
+
   // Un producto del catálogo puede existir sin publicaciones activas. Sin
   // precio no hay nada que comparar, así que seguimos con el siguiente.
-  let sinPrecio = false;
   for (const candidato of candidatos.slice(0, MAX_CANDIDATOS)) {
     const producto = await desdeProductId(candidato.productId, canonicalUrl);
     if (tienePrecio(producto)) return producto;
-    sinPrecio = true;
   }
 
   throw new MLReaderError(
-    'ITEM_NO_ENCONTRADO',
-    sinPrecio
-      ? 'Encontramos el producto en el catálogo de Mercado Libre pero no tiene publicaciones activas con precio, así que no hay con qué comparar.'
-      : 'No encontramos ese producto en el catálogo de Mercado Libre Uruguay.',
+    'PRECIO_NO_DISPONIBLE',
+    'Identificamos el producto, pero Mercado Libre no nos deja ver su precio. Escribilo vos y seguimos.',
   );
 }

@@ -52,7 +52,7 @@ ml-reader → foreign-search → matcher → landed-cost → advisor
 
 | Módulo | Qué hace | Estado |
 |---|---|---|
-| `ml-reader` | Valida el link de ML y extrae el producto | **Cliente real con OAuth**; cae a mock sin credenciales |
+| `ml-reader` | Valida el link y resuelve el producto por catálogo | **Real**; cae a mock sin credenciales |
 | `foreign-search` | Busca en tiendas del exterior | Provider mock (Fase 3: eBay) |
 | `matcher` | Decide si es **el mismo** producto | Capa determinística real (Fase 3: Claude) |
 | `landed-cost` | Costo puesto en Uruguay | **Completo y testeado** |
@@ -70,7 +70,7 @@ src/
   components/            UI
   lib/                   money, cache, logger, rate-limit, env
   modules/               la lógica de negocio
-tests/                   148 tests
+tests/                   165 tests
 ```
 
 ### Decisiones que conviene conocer antes de tocar el código
@@ -84,6 +84,32 @@ tests/                   148 tests
 **`landed-cost` siempre devuelve los dos regímenes**, cada uno con un flag `applicable`. No siempre son comparables: con un producto de USD 100 desde EE.UU. la franquicia paga USD 0 y el simplificado USD 60; con el cupo agotado la franquicia no existe. Decidir qué mostrar es tarea del `advisor`.
 
 **Cuando no sabemos algo, calculamos el escenario peor y lo decimos.** Si no podemos confirmar la residencia fiscal del vendedor, no aplicamos la exoneración de IVA y lo advertimos. Preferimos subestimar el ahorro antes que prometer uno que no se cumple.
+
+---
+
+## Qué nos deja hacer la API de Mercado Libre (y qué no)
+
+Verificado contra la API real el 2026-11-07, con credenciales propias, token de aplicación **y** token de usuario:
+
+| Endpoint | Estado | Qué da |
+|---|---|---|
+| `/products/search` | ✅ | Buscar en el catálogo de MLU |
+| `/products/{id}` | ✅ | 76 atributos: marca, modelo, capacidad, color |
+| `/products/{id}/items` | ⚠️ | Precio, **sólo si hay ganador de buy box** |
+| `/items/{id}` | ❌ 403 | — |
+| `/sites/MLU/search` | ❌ 403 | — |
+| `/highlights/...` | ❌ 403 | — |
+
+**ML nos deja identificar el producto pero no ver cuánto sale.** `/items/{id}` devuelve `access_denied` para publicaciones ajenas si la app no está certificada, y la búsqueda está cerrada. Probamos con token de usuario (flujo Authorization Code) y da exactamente los mismos 403: la restricción es de la aplicación, no del tipo de token. La documentación de ML todavía describe esos endpoints como públicos.
+
+Sobre precios: `/products/{id}/items` responde `"No winners found"` salvo que algún vendedor uruguayo haya ganado el buy box de ese producto. Medido sobre 12 productos típicos (iPhone, Galaxy, PlayStation, Kindle, Nike, notebooks, electrodomésticos): **cobertura de 1 en 12**.
+
+### Cómo lo resolvimos
+
+1. **Identidad del producto**: del slug de la URL sale el título (`/MLU-123-apple-iphone-15-128-gb-negro-_JM` → `"apple iphone 15 128 gb negro"`). No es scraping: viene en el texto que el usuario pega. Con eso buscamos en el catálogo y **elegimos con el matcher**, que descarta por marca, capacidad y generación.
+2. **Precio**: si el catálogo lo tiene, se usa. Si no, la app se lo pide a la persona, que lo está viendo en pantalla. El resultado marca cuál de los dos casos fue.
+
+Elegir con el matcher no es opcional: buscando `"sony wh 1000xm5"` el primer resultado del catálogo es un **accesorio** para esos auriculares, no los auriculares.
 
 ---
 

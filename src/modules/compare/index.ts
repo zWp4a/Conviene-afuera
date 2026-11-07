@@ -11,7 +11,7 @@
 import { estimarPesoPorCategoria } from '@config/categorias-peso';
 import { couriersParaOrigen, type CourierId } from '@config/couriers-uy';
 import { type CacheStore } from '@/lib/cache';
-import { savingsPct, sub, toUnits } from '@/lib/money';
+import { savingsPct, sub, toUnits, type Money } from '@/lib/money';
 import { logConsulta, newRequestId } from '@/lib/logger';
 import { construirVeredicto, type OpcionExterior, type Veredicto } from '@/modules/advisor';
 import { buildQuery, searchForeign, type ForeignOffer } from '@/modules/foreign-search';
@@ -22,6 +22,8 @@ import { readMLProduct, type MLProduct } from '@/modules/ml-reader';
 
 export interface CompareInput {
   readonly url: string;
+  /** Precio que escribió la persona, cuando ML no nos deja verlo. */
+  readonly precioManual?: Money;
   readonly franquicia?: EstadoFranquicia;
   readonly courierId?: CourierId;
 }
@@ -57,7 +59,10 @@ export async function compare(
 
   try {
     const [ml, fx] = await Promise.all([
-      readMLProduct(input.url, opts.cache ? { cache: opts.cache } : {}),
+      readMLProduct(input.url, {
+        ...(opts.cache ? { cache: opts.cache } : {}),
+        ...(input.precioManual ? { precioManual: input.precioManual } : {}),
+      }),
       getCotizacion(opts.cache ? { cache: opts.cache } : {}),
     ]);
 

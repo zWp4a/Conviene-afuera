@@ -29,6 +29,7 @@ export const MOCK_PRODUCTS: readonly MLProduct[] = [
     images: [],
     warrantyText: 'Garantía de fábrica: 12 meses',
     source: 'mock',
+    priceSource: 'mock',
   },
   {
     id: 'MLU987654321',
@@ -49,6 +50,7 @@ export const MOCK_PRODUCTS: readonly MLProduct[] = [
     images: [],
     warrantyText: 'Garantía del vendedor: 6 meses',
     source: 'mock',
+    priceSource: 'mock',
   },
   {
     id: 'MLU555000111',
@@ -67,6 +69,7 @@ export const MOCK_PRODUCTS: readonly MLProduct[] = [
     shipping: { envioGratis: false, esFull: false, costo: uyu(290) },
     images: [],
     source: 'mock',
+    priceSource: 'mock',
   },
 ];
 

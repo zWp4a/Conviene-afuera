@@ -12,11 +12,15 @@ export function ProductCard({ ml, fx }: { ml: MLProduct; fx: Cotizacion }) {
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-600">
           Mercado Libre Uruguay
         </p>
-        {ml.source === 'mock' && (
+        {ml.source === 'mock' ? (
           <span className="shrink-0 rounded-full bg-warn-50 px-2 py-0.5 text-[11px] font-semibold text-warn-500">
             datos de ejemplo
           </span>
-        )}
+        ) : ml.priceSource === 'usuario' ? (
+          <span className="shrink-0 rounded-full bg-warn-50 px-2 py-0.5 text-[11px] font-semibold text-warn-500">
+            precio que ingresaste
+          </span>
+        ) : null}
       </div>
 
       <h2 id="ml-titulo" className="mt-2 text-base font-semibold leading-snug sm:text-lg">

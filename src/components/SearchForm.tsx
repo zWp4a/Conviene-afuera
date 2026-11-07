@@ -12,6 +12,10 @@ export function SearchForm() {
   const [url, setUrl] = useState('');
   const [mostrarFranquicia, setMostrarFranquicia] = useState(false);
 
+  // Mercado Libre cerró el acceso a los precios de publicaciones para apps no
+  // certificadas, así que cuando no podemos verlo se lo pedimos a la persona.
+  const pidePrecio = state.status === 'falta-precio';
+
   // Validación en vivo, sin molestar hasta que haya algo escrito.
   const urlSospechosa = url.trim().length > 12 && !isMLUrl(url);
 
@@ -40,6 +44,44 @@ export function SearchForm() {
           <p id="url-aviso" className="mt-1.5 text-xs text-warn-500">
             Ese link no parece ser de un producto de mercadolibre.com.uy.
           </p>
+        )}
+
+        {pidePrecio && (
+          <fieldset
+            className="mt-3 rounded-xl border-2 border-warn-500 bg-warn-50 p-3"
+            aria-describedby="precio-ayuda"
+          >
+            <legend className="px-1 text-xs font-semibold text-warn-500">
+              Falta el precio
+            </legend>
+            <p id="precio-ayuda" className="text-xs leading-relaxed text-neutral-700">
+              Identificamos el producto, pero Mercado Libre no nos deja ver su precio.
+              Copialo de la pantalla de Mercado Libre y lo comparamos.
+            </p>
+            <div className="mt-2 flex gap-2">
+              <select
+                name="monedaMl"
+                aria-label="Moneda"
+                defaultValue="UYU"
+                className="rounded-lg border bg-white px-2 py-2.5 text-sm"
+                style={{ borderColor: 'var(--border)' }}
+              >
+                <option value="UYU">$ UYU</option>
+                <option value="USD">US$</option>
+              </select>
+              <input
+                name="precioMl"
+                type="text"
+                inputMode="decimal"
+                required
+                autoFocus
+                placeholder="18500"
+                aria-label="Precio en Mercado Libre"
+                className="min-w-0 flex-1 rounded-lg border bg-white px-3 py-2.5 text-base tabular-nums"
+                style={{ borderColor: 'var(--border)' }}
+              />
+            </div>
+          </fieldset>
         )}
 
         <button
@@ -96,7 +138,7 @@ export function SearchForm() {
           disabled={pending}
           className="mt-4 w-full rounded-xl bg-brand-500 px-4 py-3.5 text-base font-semibold text-white transition-colors hover:bg-brand-600 disabled:opacity-60"
         >
-          {pending ? 'Comparando…' : '¿Conviene afuera?'}
+          {pending ? 'Comparando…' : pidePrecio ? 'Comparar con ese precio' : '¿Conviene afuera?'}
         </button>
       </form>
 

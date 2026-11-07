@@ -3,6 +3,7 @@
 import { headers } from 'next/headers';
 import { clientKey, rateLimit } from '@/lib/rate-limit';
 import { env } from '@/lib/env';
+import { fromUnits, type Currency } from '@/lib/money';
 import { MLReaderError } from '@/modules/ml-reader';
 import { compare, type CompareResult } from '@/modules/compare';
 import type { EstadoFranquicia } from '@/modules/landed-cost';
@@ -10,7 +11,9 @@ import type { EstadoFranquicia } from '@/modules/landed-cost';
 export type CompareState =
   | { status: 'idle' }
   | { status: 'ok'; result: CompareResult }
-  | { status: 'error'; message: string; code?: string };
+  | { status: 'error'; message: string; code?: string }
+  /** Identificamos el producto pero falta el precio: lo pedimos en la UI. */
+  | { status: 'falta-precio'; message: string; url: string };
 
 export async function compareAction(
   _prev: CompareState,
@@ -46,11 +49,27 @@ export async function compareAction(
       }
     : { enviosUsados: 0, cupoUsadoUsd: 0, asumido: true };
 
+  // Precio de Mercado Libre, cuando la persona lo escribe.
+  const precioRaw = String(formData.get('precioMl') ?? '').replace(',', '.').trim();
+  const monedaRaw = String(formData.get('monedaMl') ?? 'UYU');
+  const precioNum = precioRaw === '' ? Number.NaN : Number(precioRaw);
+  const precioManual =
+    Number.isFinite(precioNum) && precioNum > 0
+      ? fromUnits(precioNum, monedaRaw === 'USD' ? 'USD' : ('UYU' as Currency))
+      : undefined;
+
   try {
-    const result = await compare({ url, franquicia });
+    const result = await compare({
+      url,
+      franquicia,
+      ...(precioManual ? { precioManual } : {}),
+    });
     return { status: 'ok', result };
   } catch (error) {
     if (error instanceof MLReaderError) {
+      if (error.code === 'PRECIO_NO_DISPONIBLE') {
+        return { status: 'falta-precio', message: error.userMessage, url };
+      }
       return { status: 'error', code: error.code, message: error.userMessage };
     }
     console.error('compareAction falló', error);

@@ -7,12 +7,24 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { env } from '@/lib/env';
+import { fromUnits } from '@/lib/money';
 import { clientKey, rateLimit } from '@/lib/rate-limit';
 import { compare } from '@/modules/compare';
 import { MLReaderError } from '@/modules/ml-reader';
 
 const bodySchema = z.object({
   url: z.string().min(1),
+  /**
+   * Precio en Mercado Libre, cuando quien llama ya lo conoce. Hace falta
+   * porque ML no expone el precio de las publicaciones a apps no
+   * certificadas: ver PRECIO_NO_DISPONIBLE en ml-reader/types.ts.
+   */
+  precioManual: z
+    .object({
+      amount: z.number().positive(),
+      currency: z.enum(['UYU', 'USD']),
+    })
+    .optional(),
   franquicia: z
     .object({
       enviosUsados: z.number().int().min(0).max(3),
@@ -69,6 +81,14 @@ export async function POST(request: Request) {
       url: parsed.data.url,
       ...(parsed.data.franquicia
         ? { franquicia: { ...parsed.data.franquicia, asumido: false } }
+        : {}),
+      ...(parsed.data.precioManual
+        ? {
+            precioManual: fromUnits(
+              parsed.data.precioManual.amount,
+              parsed.data.precioManual.currency,
+            ),
+          }
         : {}),
     });
     return NextResponse.json(result, { headers: rlHeaders });

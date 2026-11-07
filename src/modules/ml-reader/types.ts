@@ -45,6 +45,18 @@ export interface MLProduct {
   readonly warrantyText?: string;
   /** De dónde salió el dato: para que la UI pueda avisar cuando es mock. */
   readonly source: 'api' | 'mock';
+  /**
+   * De dónde salió el PRECIO, que no siempre es de donde salió el resto.
+   *
+   * `catalogo`: lo dio Mercado Libre. Sólo pasa cuando algún vendedor ganó el
+   *             buy box del producto, que es ~1 de cada 12 casos.
+   * `usuario`:  lo escribió la persona mirando la pantalla de ML.
+   * `mock`:     datos de ejemplo.
+   *
+   * La UI tiene que decir cuál es: un precio que escribió el usuario y uno
+   * que confirmó ML no merecen la misma confianza.
+   */
+  readonly priceSource: 'catalogo' | 'usuario' | 'mock';
 }
 
 export type MLReaderErrorCode =
@@ -52,7 +64,14 @@ export type MLReaderErrorCode =
   | 'NO_ES_MERCADOLIBRE_UY'
   | 'ITEM_NO_ENCONTRADO'
   | 'SIN_CREDENCIALES'
-  | 'API_NO_DISPONIBLE';
+  | 'API_NO_DISPONIBLE'
+  /**
+   * Identificamos el producto pero no su precio. No es un error del usuario
+   * ni nuestro: Mercado Libre cerró el acceso a los precios de publicaciones
+   * para apps no certificadas, y sólo ~1 de cada 12 productos del catálogo
+   * tiene un precio visible. Se resuelve pidiéndole el precio a la persona.
+   */
+  | 'PRECIO_NO_DISPONIBLE';
 
 export class MLReaderError extends Error {
   constructor(
