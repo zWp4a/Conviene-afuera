@@ -1,0 +1,182 @@
+# ¿Conviene afuera?
+
+Pegás el link de un producto de **Mercado Libre Uruguay** y la app te dice si conviene comprarlo acá o traerlo del exterior, con el **costo real puesto en Uruguay**: producto + envío + courier + impuestos según el régimen aduanero vigente.
+
+> **Estado: Fase 1 completa.** La app corre entera con datos mock. El motor de impuestos, el parseo de links y el matcher determinístico son reales y están testeados. Las integraciones con APIs externas (Mercado Libre, eBay, Claude) son las Fases 2 y 3.
+
+---
+
+## Correrlo localmente
+
+```bash
+npm install
+```
+
+```bash
+npm run dev
+```
+
+Abrí http://localhost:3000 y pegá cualquier link de `mercadolibre.com.uy`. **No necesitás configurar nada**: sin credenciales la app usa datos de ejemplo y la UI lo aclara con un cartel.
+
+Para personalizar algo:
+
+```bash
+cp .env.example .env.local
+```
+
+### Otros comandos
+
+```bash
+npm test
+```
+
+```bash
+npm run typecheck
+```
+
+```bash
+npm run build
+```
+
+---
+
+## Cómo está armado
+
+El código está dividido en módulos que no se conocen entre sí: cada uno expone sólo tipos de dominio por su `index.ts`, y el único lugar donde se encadenan es `src/modules/compare`. Así cada módulo se testea sin red y se reemplaza sin tocar el resto.
+
+```
+ml-reader → foreign-search → matcher → landed-cost → advisor
+                                 ↑          ↑
+                                fx     config/aduana-uy.ts
+```
+
+| Módulo | Qué hace | Estado |
+|---|---|---|
+| `ml-reader` | Valida el link de ML y extrae el producto | Parseo real; datos mock (Fase 2: API de ML) |
+| `foreign-search` | Busca en tiendas del exterior | Provider mock (Fase 3: eBay) |
+| `matcher` | Decide si es **el mismo** producto | Capa determinística real (Fase 3: Claude) |
+| `landed-cost` | Costo puesto en Uruguay | **Completo y testeado** |
+| `advisor` | Veredicto + guía de compra | **Completo** |
+| `fx` | Cotización USD/UYU | Fallback (Fase 2: BCU) |
+
+```
+config/                  normativa y tarifas, versionadas
+  aduana-uy.ts           ← única fuente de verdad de las reglas aduaneras
+  couriers-uy.ts         ← tarifas de courier
+  categorias-peso.ts     ← pesos estimados por categoría
+src/
+  app/                   páginas, server action y /api/compare
+  components/            UI
+  lib/                   money, cache, logger, rate-limit, env
+  modules/               la lógica de negocio
+tests/                   101 tests
+```
+
+### Decisiones que conviene conocer antes de tocar el código
+
+**La plata vive en enteros.** Todo monto es `Money = { cents, currency }`. Nunca `number` en unidades: un `0.1 + 0.2` en un cálculo de impuestos es un bug de credibilidad. Ver `src/lib/money.ts`.
+
+**Los umbrales del matcher son asimétricos a propósito.** El error caro no es decir "no son iguales" cuando sí lo son: es lo contrario, mostrar un iPhone de 128 GB de afuera contra uno de 256 GB de acá y prometer un ahorro que no existe. Por eso sólo se muestra como idéntico con confianza ≥ 0,90, hay una banda intermedia de "verificá la variante" entre 0,75 y 0,90, y el veredicto **nunca** compara precios contra un producto marcado como "similar".
+
+**Las capacidades y las generaciones se deciden sin LLM.** Comparar 128 GB con 256 GB es aritmética, no juicio de lenguaje: mandarlo a un modelo sería más caro y menos confiable. El LLM sólo ve lo que la capa determinística no pudo resolver.
+
+**`landed-cost` siempre devuelve los dos regímenes**, cada uno con un flag `applicable`. No siempre son comparables: con un producto de USD 100 desde EE.UU. la franquicia paga USD 0 y el simplificado USD 60; con el cupo agotado la franquicia no existe. Decidir qué mostrar es tarea del `advisor`.
+
+**Cuando no sabemos algo, calculamos el escenario peor y lo decimos.** Si no podemos confirmar que el comercio tiene sede fiscal en EE.UU., no aplicamos la exención de IVA y lo advertimos. Preferimos subestimar el ahorro antes que prometer uno que no se cumple.
+
+---
+
+## Cómo actualizar la normativa
+
+Toda la normativa está en **`config/aduana-uy.ts`** y en ningún otro lado. Para actualizarla:
+
+1. Cotejá los valores contra [aduanas.gub.uy](https://www.aduanas.gub.uy/) o el Diario Oficial.
+2. Editá los campos de `ADUANA_UY`.
+3. Actualizá `vigenciaDesde`, `norma` y `revisadoEl`.
+4. Agregá la fuente oficial a `FUENTES` con `tipo: 'oficial'`.
+5. Borrá de `PENDIENTES` lo que hayas confirmado.
+6. Cuando no quede nada pendiente, poné `verificadoContraFuenteOficial: true`. Eso apaga el cartel de advertencia en la UI.
+7. Corré `npm test`: si un cambio de parámetro rompe un test, el test te dice qué caso cambió.
+
+### ⚠️ Pendientes de verificación
+
+Los valores actuales salieron de guías comerciales y prensa que coinciden entre sí, **no del texto oficial del decreto**. Falta confirmar:
+
+- **Mínimo de USD 20 de IVA** por envío gravado en franquicia.
+- **Tope de 20 kg** por envío en el régimen simplificado.
+- Si la exención de hasta USD 200 exige **sede fiscal del comercio en EE.UU.** (acuerdo TIFA) o alcanza con el origen físico del envío.
+- Si las compras anteriores al 1/5/2026 **cuentan contra el cupo** de 2026.
+- Una fuente menciona un **cambio normativo con fecha 1/10/2026** sin detallar su contenido. Si existió, ya está vigente y no está reflejado.
+- Si la **base imponible** incluye el flete internacional. Se asumió que no (el supuesto más favorable al usuario).
+
+---
+
+## Cómo actualizar las tarifas de courier
+
+Están en **`config/couriers-uy.ts`**. **Todas las tarifas actuales son placeholders inventados**, marcados con `// TODO: verificar tarifa real`. Mientras `tarifasVerificadas` sea `false`, la UI muestra una advertencia.
+
+Para cada courier: completá `cargoFijoUsd`, `tramos` o `usdPorKg`, `pesoMinimoFacturableKg` y `diasEstimados`; después poné `tarifasVerificadas: true`.
+
+Couriers ya listados, a completar: **Aeropost, Miami Box, Grupo Gripper, UPS, DAC Courier**. Si falta alguno que uses, agregalo al array `COURIERS` y su id a `CourierId`.
+
+---
+
+## Cómo agregar un provider nuevo
+
+Tres pasos:
+
+**1.** Agregá el id a `ProviderId` en `src/modules/foreign-search/types.ts`.
+
+**2.** Creá `src/modules/foreign-search/providers/tu-provider.ts` implementando la interfaz:
+
+```ts
+export class TuProvider implements ProductSearchProvider {
+  readonly id = 'tu-provider' as const;
+  readonly displayName = 'Tu Tienda';
+
+  isConfigured(): boolean {
+    return Boolean(env().TU_PROVIDER_KEY);
+  }
+
+  async search(query: SearchQuery): Promise<readonly ForeignOffer[]> {
+    // Devolvé ForeignOffer[]. Lo importante:
+    //   originCountry      → de dónde sale el paquete (define courier y plazo)
+    //   merchantTaxCountry → dónde tributa el comercio (define la exención de
+    //                        IVA). Si no lo sabés con certeza, dejalo
+    //                        undefined: landed-cost no aplica la exención y lo
+    //                        advierte, que es preferible a prometer de más.
+    //   gtin               → si lo tenés, el matcher no gasta una llamada al LLM
+  }
+}
+```
+
+**3.** Registralo en `src/modules/foreign-search/registry.ts`, agregá su key a `src/lib/env.ts` y a `.env.example`, y activalo con `FOREIGN_SEARCH_PROVIDERS=mock,tu-provider`.
+
+No hace falta tocar nada más: la UI, el matcher y `landed-cost` lo toman solos.
+
+---
+
+## Qué falta
+
+| Fase | Qué incluye | Estado |
+|---|---|---|
+| 1 | Config, `landed-cost` con tests, UI con mocks | ✅ Completa |
+| 2 | `ml-reader` contra la API de ML (OAuth) · `fx` contra el BCU | Pendiente |
+| 3 | `foreign-search` con eBay · `matcher` con Claude | Pendiente |
+| 4 | Pulido de UI y deploy | Pendiente |
+
+**Fuera de alcance del MVP:** cuentas de usuario, seguimiento persistente del cupo, extensión de navegador, AliExpress/Shein/Temu, links de afiliado (el campo `affiliateUrl` está en el tipo pero sin integrar).
+
+---
+
+## Deploy
+
+**Vercel:** importá el repo y cargá las variables de `.env.example` en Settings → Environment Variables. No hace falta más configuración.
+
+**VPS con Docker:** `npm run build` genera el build estándar de Next. Nota: el rate limiting y la caché son en memoria, así que con varias instancias cada una lleva su propia cuenta. Para algo serio, mover `CacheStore` y el rate limit a Redis.
+
+---
+
+## Aviso
+
+Esta app da **estimaciones orientativas, no asesoramiento aduanero**. Verificá siempre en [aduanas.gub.uy](https://www.aduanas.gub.uy/).
