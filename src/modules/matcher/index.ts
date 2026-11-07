@@ -11,14 +11,22 @@
  * preferimos decir "no sé" antes que afirmar un match que no podemos sostener.
  */
 import { matchDeterministic } from './deterministic';
-import { isLlmConfigured, matchWithLlm } from './llm';
+import { isLlmConfigured, matchWithLlm, type LlmClient } from './llm';
 import { tokenSimilarity } from './normalize';
 import { tierFor, type MatchCandidate, type MatchVerdict } from './types';
 
 export * from './types';
 export * from './normalize';
 export { matchDeterministic } from './deterministic';
-export { isLlmConfigured, SYSTEM_PROMPT, OUTPUT_SCHEMA, buildUserPrompt } from './llm';
+export {
+  isLlmConfigured,
+  SYSTEM_PROMPT,
+  veredictoSchema,
+  buildUserPrompt,
+  matchWithLlm,
+  clienteAnthropic,
+  type LlmClient,
+} from './llm';
 
 /** Un `reason` que no nombra un atributo concreto no es confiable. */
 const PALABRAS_DE_ATRIBUTO = [
@@ -31,16 +39,22 @@ export function reasonNombraAtributo(reason: string): boolean {
   return PALABRAS_DE_ATRIBUTO.some((p) => r.includes(p));
 }
 
+export interface MatchOptions {
+  /** Inyectable para testear sin gastar API. */
+  readonly llm?: LlmClient;
+}
+
 export async function matchProducts(
   a: MatchCandidate,
   b: MatchCandidate,
+  opts: MatchOptions = {},
 ): Promise<MatchVerdict> {
   const det = matchDeterministic(a, b);
   if (det) return det;
 
-  if (isLlmConfigured()) {
+  if (opts.llm || isLlmConfigured()) {
     try {
-      const llm = await matchWithLlm(a, b);
+      const llm = opts.llm ? await matchWithLlm(a, b, opts.llm) : await matchWithLlm(a, b);
       // Si el modelo no puede nombrar el atributo que sostiene su decisión,
       // le bajamos la confianza en lugar de creerle.
       if (llm.match && !reasonNombraAtributo(llm.reason)) {
@@ -48,8 +62,12 @@ export async function matchProducts(
         return { ...llm, confidence: conf, tier: tierFor(conf, llm.match) };
       }
       return { ...llm, tier: tierFor(llm.confidence, llm.match) };
-    } catch {
-      // Si el LLM falla, caemos al heurístico de abajo en lugar de romper.
+    } catch (error) {
+      // Si el LLM falla, caemos al heurístico de abajo en lugar de romper la
+      // consulta entera. Lo registramos para poder auditar la tasa de fallos.
+      console.warn(
+        `[matcher] Claude falló: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -69,11 +87,12 @@ export async function matchProducts(
 export async function matchAll<T extends MatchCandidate>(
   base: MatchCandidate,
   candidates: readonly T[],
+  opts: MatchOptions = {},
 ): Promise<readonly { readonly candidate: T; readonly verdict: MatchVerdict }[]> {
   const results = await Promise.all(
     candidates.map(async (candidate) => ({
       candidate,
-      verdict: await matchProducts(base, candidate),
+      verdict: await matchProducts(base, candidate, opts),
     })),
   );
   const orden = { exacto: 0, verificar: 1, similar: 2 } as const;

@@ -54,7 +54,7 @@ ml-reader → foreign-search → matcher → landed-cost → advisor
 |---|---|---|
 | `ml-reader` | Valida el link y resuelve el producto por catálogo | **Real**; cae a mock sin credenciales |
 | `foreign-search` | Busca en tiendas del exterior | Provider mock (Fase 3: eBay) |
-| `matcher` | Decide si es **el mismo** producto | Capa determinística real (Fase 3: Claude) |
+| `matcher` | Decide si es **el mismo** producto | **Real**: determinístico + Claude para lo ambiguo |
 | `landed-cost` | Costo puesto en Uruguay | **Completo y testeado** |
 | `advisor` | Veredicto + guía de compra | **Completo** |
 | `fx` | Cotización USD/UYU | **Real** (dolarapi, con detección de dato viejo) |
@@ -70,7 +70,7 @@ src/
   components/            UI
   lib/                   money, cache, logger, rate-limit, env
   modules/               la lógica de negocio
-tests/                   165 tests
+tests/                   178 tests
 ```
 
 ### Decisiones que conviene conocer antes de tocar el código
@@ -227,7 +227,8 @@ No hace falta tocar nada más: la UI, el matcher y `landed-cost` lo toman solos.
 | 1 | Config, `landed-cost` con tests, UI con mocks | ✅ Completa |
 | 1.5 | Normativa verificada contra fuente oficial · registro de vendedores de la DNA | ✅ Completa |
 | 2 | `ml-reader` con OAuth · `fx` contra fuente real | ✅ Código completo; falta que cargues las credenciales de ML |
-| 3 | `foreign-search` con eBay · `matcher` con Claude | Pendiente |
+| 3 | `matcher` con Claude | ✅ Completa |
+| 3 | `foreign-search` con eBay | Pendiente: faltan credenciales de developer |
 | 4 | Pulido de UI y deploy | Pendiente |
 
 **Fuera de alcance del MVP:** cuentas de usuario, seguimiento persistente del cupo, extensión de navegador, AliExpress/Shein/Temu, links de afiliado (el campo `affiliateUrl` está en el tipo pero sin integrar).
